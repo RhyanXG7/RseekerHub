@@ -1,7 +1,7 @@
 local StarterGui = game:GetService("StarterGui")
 
 local Notifications = {
-	"♥️ GodMode Agora está sendo exibido.",
+	"👻 Modo Fantamsa ativo",
 	"♥️ RSeeker HUB",
 }
 
