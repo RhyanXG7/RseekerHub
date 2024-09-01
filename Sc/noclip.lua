@@ -1,7 +1,12 @@
 local RunService = game:GetService("RunService")
 local player = game.Players.LocalPlayer
 
-local function noClip()
+-- Variável para controlar o estado do NoClip
+local noClipEnabled = false
+local noClipConnection
+
+-- Função para alternar o NoClip
+local function toggleNoClip()
     local character = player.Character or player.CharacterAdded:Wait()
 
     -- Função para desativar a colisão
@@ -13,14 +18,38 @@ local function noClip()
         end
     end
 
-    -- Reaplica o NoClip constantemente
-    RunService.Stepped:Connect(function()
-        disableCollision()
-    end)
+    if noClipEnabled then
+        -- Desativa o NoClip
+        if noClipConnection then
+            noClipConnection:Disconnect()
+            noClipConnection = nil
+        end
+        -- Restaurar a colisão das partes do personagem
+        for _, part in pairs(character:GetChildren()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
+        print("NoClip desativado.")
+    else
+        -- Ativa o NoClip
+        noClipConnection = RunService.Stepped:Connect(function()
+            disableCollision()
+        end)
+        print("NoClip ativado.")
+    end
+
+    -- Alterna o estado
+    noClipEnabled = not noClipEnabled
 end
 
--- Ativar o NoClip
-noClip()
+-- Adicionar o botão na aba existente
+Tab:AddButton({
+    Name = "Toggle NoClip",
+    Callback = function()
+        toggleNoClip()
+    end    
+})
 
 local StarterGui = game:GetService("StarterGui")
 
