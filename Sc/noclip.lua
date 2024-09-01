@@ -54,20 +54,26 @@ Tab:AddButton({
 local StarterGui = game:GetService("StarterGui")
 
 local Notifications = {
-	"👻 NoClip Ativo",
-	"♥️ RSeeker HUB",
+    "👻 NoClip Ativo",
+    "♥️ RSeeker HUB",
 }
 
 local TimeBetweenNotifications = 5 -- Substitua 5 pelo número de segundos que deseja esperar entre as notificações
 
-for i = 1, #Notifications do
-	local Notification = Notifications[i]
-	
-	StarterGui:SetCore("SendNotification", {
-		Title = "RSeekerHUB",
-		Text = Notification,
-		Duration = 5
-	})
-	
-	wait(TimeBetweenNotifications)
+-- Função para enviar notificações uma de cada vez
+local function sendNotifications()
+    for i = 1, #Notifications do
+        local Notification = Notifications[i]
+        
+        StarterGui:SetCore("SendNotification", {
+            Title = "RSeekerHUB",
+            Text = Notification,
+            Duration = 5
+        })
+        
+        wait(TimeBetweenNotifications)
+    end
 end
+
+-- Enviar notificações ao iniciar o script
+sendNotifications()
