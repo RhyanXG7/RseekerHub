@@ -54,7 +54,7 @@ local function toggleGodMode()
     
         humanoidRootPart.CFrame = originalPosition
         elevated = false
-        godModeButton.Text = "GODMODE [OFF]"
+        godModeButton.Text = "GhostMode [OFF]"
     else
 
         originalPosition = humanoidRootPart.CFrame
@@ -63,7 +63,7 @@ local function toggleGodMode()
 
         local cam = workspace.CurrentCamera
         cam.CFrame = originalPosition
-        godModeButton.Text = "GODMODE [ON]"
+        godModeButton.Text = "GhostMode [ON]"
     end
 
     playSound()
