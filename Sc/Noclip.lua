@@ -1,3 +1,23 @@
+local StarterGui = game:GetService("StarterGui")
+
+local Notifications = {
+	"👻 Noclip ativo",
+	"♥️ RSeeker HUB",
+}
+
+local TimeBetweenNotifications = 5 -- Substitua 5 pelo número de segundos que deseja esperar entre as notificações
+
+for i = 1, #Notifications do
+	local Notification = Notifications[i]
+	
+	StarterGui:SetCore("SendNotification", {
+		Title = "RSeekerHUB",
+		Text = Notification,
+		Duration = 5
+	})
+	
+	wait(TimeBetweenNotifications)
+end
 local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
 local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
