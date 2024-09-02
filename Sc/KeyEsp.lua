@@ -1,38 +1,49 @@
 local KeyChams = {}
-local SelectedObject = nil -- Variável para armazenar o objeto selecionado
+local SelectedObject = nil
 
 local function ApplyKeyChams(inst)
-    wait()
+    if not inst:IsDescendantOf(game.Workspace) then return nil end  -- Verificação para garantir que o objeto ainda existe
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     Cham.FillColor = Color3.new(0.980392, 0.670588, 0)
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(0.792156, 0.792156, 0.792156)
-    Cham.Parent = game:GetService("CoreGui")
     Cham.Adornee = inst
     Cham.Enabled = true
+    Cham.Parent = game:GetService("CoreGui")
     Cham.RobloxLocked = true
     return Cham
 end
 
-local function OnObjectSelected(inst)
+local function OnObjectDeselected()
     if SelectedObject then
-        for _, cham in ipairs(KeyChams) do
+        for i = #KeyChams, 1, -1 do
+            local cham = KeyChams[i]
             if cham.Adornee == SelectedObject then
                 cham:Destroy()
+                table.remove(KeyChams, i)
             end
         end
+        SelectedObject = nil
     end
-    SelectedObject = inst
-    table.insert(KeyChams, ApplyKeyChams(inst))
 end
+
+local function OnObjectSelected(inst)
+    OnObjectDeselected()  -- Deselecionar qualquer objeto anterior
+    SelectedObject = inst
+    local cham = ApplyKeyChams(inst)
+    if cham then
+        table.insert(KeyChams, cham)
+    end
+end
+
 Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
     if inst.Name == "KeyObtain" then
         OnObjectSelected(inst)
     end
 end)
 
-for i, v in ipairs(Workspace:GetDescendants()) do
+for _, v in ipairs(Workspace:GetDescendants()) do
     if v.Name == "KeyObtain" then
         OnObjectSelected(v)
     end
