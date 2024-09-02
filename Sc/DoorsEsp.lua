@@ -5,7 +5,7 @@ local function ApplyLockerChams(inst)
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     Cham.FillColor = Color3.new(0.57, 0.39, 0.10) -- Cor do ESP (marrom claro)
     Cham.FillTransparency = 0.5
-    Cham.OutlineColor = Color3.new(0.792156, 0.792156, 0.792156) -- Cor do contorno
+    Cham.OutlineColor = Color3.new(0.792156, 0.792156, 0.792156) --- Contorno
     Cham.Parent = game:GetService("CoreGui")
     Cham.Adornee = inst
     Cham.Enabled = true
