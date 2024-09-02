@@ -7,7 +7,6 @@ local function createESP(player)
     highlight.Parent = player.Character
 end
 
--- Função para atualizar a GUI com vida, distância e nome
 local function updateGUI(player, gui)
     local character = player.Character
     if character and character:FindFirstChild("Humanoid") and character:FindFirstChild("Head") then
@@ -17,7 +16,6 @@ local function updateGUI(player, gui)
     end
 end
 
--- Função para criar a GUI acima do jogador
 local function createGUI(player)
     local billboard = Instance.new("BillboardGui")
     billboard.Adornee = player.Character:WaitForChild("Head")
@@ -35,13 +33,11 @@ local function createGUI(player)
 
     billboard.Parent = player.Character
 
-    -- Atualizar a GUI periodicamente
     game:GetService("RunService").RenderStepped:Connect(function()
         updateGUI(player, textLabel)
     end)
 end
 
--- Adicionar ESP e GUI para todos os jogadores
 for _, player in pairs(game.Players:GetPlayers()) do
     if player.Character then
         createESP(player)
@@ -61,23 +57,17 @@ game.Players.PlayerAdded:Connect(function(player)
     end)
 end)
 
-local StarterGui = game:GetService("StarterGui")
-
-local Notifications = {
-	"🎮 ESP PARA JOGADORES ATIVO!",
-	"♥️ RSeeker HUB",
-}
-
-local TimeBetweenNotifications = 5 -- Substitua 5 pelo número de segundos que deseja esperar entre as notificações
-
-for i = 1, #Notifications do
-	local Notification = Notifications[i]
-	
-	StarterGui:SetCore("SendNotification", {
-		Title = "RSeekerHUB - Server",
-		Text = Notification,
-		Duration = 5
-	})
-	
-	wait(TimeBetweenNotifications)
-end
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://3458224686"
+sound.Volume = 1
+sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+sound:Play()
+sound.Ended:Connect(function()
+    sound:Destroy()
+end)
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "🔔 Notificação",
+    Text = "🎮 ESP JOGADORES ATIVO!",
+    Icon = "rbxassetid://13264701341",
+    Duration = 5
+})
