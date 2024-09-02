@@ -29,7 +29,7 @@ spawn(function()
                 txtlbl.Size = UDim2.new(1, 0, 10, 0)
                 txtlbl.Font = 'ArialBold'
                 txtlbl.FontSize = 'Size12'
-                txtlbl.Text = "Door " .. v.Name
+                txtlbl.Text = "Porta " .. v.Name
                 txtlbl.TextStrokeTransparency = 0.5
                 txtlbl.TextColor3 = Color3.fromRGB(241, 196, 15)
 
