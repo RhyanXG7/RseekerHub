@@ -5,17 +5,13 @@ local player = game.Players.LocalPlayer
 local camera = game.Workspace.CurrentCamera
 local drawingService = game:GetService("Drawing")
 
-
 local function createLine(from, to, color, thickness)
-    local line = Instance.new("Drawing")
-    line.Name = "Line"
-    line.Type = Enum.DrawingPrimitive.Line
+    local line = Drawing.new("Line")
     line.From = from
     line.To = to
     line.Color = color
     line.Thickness = thickness
     line.Visible = true
-    line.Parent = player.PlayerGui
     return line
 end
 
