@@ -23,9 +23,9 @@ end
 
 local function OnObjectSelected(inst)
     if SelectedObject then
-        for i, cham in ipairs(KeyChams) do
-            if cham.Adornee == SelectedObject then
-                cham:Destroy()
+        for i = #KeyChams, 1, -1 do
+            if KeyChams[i].Adornee == SelectedObject then
+                KeyChams[i]:Destroy()
                 table.remove(KeyChams, i)
             end
         end
