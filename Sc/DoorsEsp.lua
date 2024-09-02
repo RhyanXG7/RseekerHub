@@ -71,7 +71,7 @@ spawn(function()
             if v:FindFirstChild("Door") and v.Door:FindFirstChild("Door") and v.Door.Door:FindFirstChild("BillBoard") then
                 -- Atualiza a distância no TextLabel
                 local distance = round((game.Players.LocalPlayer.Character.PrimaryPart.Position - v.Door.Door.Position).magnitude, 1)
-                v.Door.Door.BillBoard.Dist.Text = distance .. " Studs"
+                v.Door.Door.BillBoard.Dist.Text = distance .. " Distância"
 
                 -- Atualiza a linha
                 local line = v.Door.Door:FindFirstChild("Line")
