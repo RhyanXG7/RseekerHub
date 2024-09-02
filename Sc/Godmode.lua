@@ -1,23 +1,3 @@
-local StarterGui = game:GetService("StarterGui")
-
-local Notifications = {
-	"👻 Modo Fantamsa ativo",
-	"♥️ RSeeker HUB",
-}
-
-local TimeBetweenNotifications = 5 -- Substitua 5 pelo número de segundos que deseja esperar entre as notificações
-
-for i = 1, #Notifications do
-	local Notification = Notifications[i]
-	
-	StarterGui:SetCore("SendNotification", {
-		Title = "RSeekerHUB",
-		Text = Notification,
-		Duration = 5
-	})
-	
-	wait(TimeBetweenNotifications)
-end
 -- Finno Rhyan
 local elevated = false
 local originalPosition = nil
@@ -33,7 +13,7 @@ local godModeButton = Instance.new("TextButton")
 
 godModeButton.Size = UDim2.new(0, 200, 0, 50)
 godModeButton.Position = UDim2.new(0.5, -100, 0.9, -25)
-godModeButton.Text = "GODMODE [OFF]"
+godModeButton.Text = "GhostMode [OFF]"
 godModeButton.TextScaled = true
 godModeButton.BackgroundColor3 = Color3.new(0, 0, 0)
 godModeButton.TextColor3 = Color3.new(1, 1, 1)
@@ -70,3 +50,17 @@ local function toggleGodMode()
 end
 
 godModeButton.MouseButton1Click:Connect(toggleGodMode)
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://3458224686"
+sound.Volume = 1
+sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+sound:Play()
+sound.Ended:Connect(function()
+    sound:Destroy()
+end)
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "🔔 Notificação",
+    Text = "👻 GHOST-MODE ATIVO",
+    Icon = "rbxassetid://13264701341",
+    Duration = 5
+})
