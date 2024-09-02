@@ -40,27 +40,21 @@ local function toggleNoclip()
         print("Noclip desativado")
     end
 end
-
--- Alternar o estado do noclip ao executar o script
 toggleNoclip()
 
-local StarterGui = game:GetService("StarterGui")
 
-local Notifications = {
-	"👻 NOCLIP Ativo!",
-	"♥️ RSeeker HUB",
-}
-
-local TimeBetweenNotifications = 5 -- Substitua 5 pelo número de segundos que deseja esperar entre as notificações
-
-for i = 1, #Notifications do
-	local Notification = Notifications[i]
-	
-	StarterGui:SetCore("SendNotification", {
-		Title = "RSeekerHUB",
-		Text = Notification,
-		Duration = 5
-	})
-	
-	wait(TimeBetweenNotifications)
-end
+-- Separando
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://3458224686"
+sound.Volume = 1
+sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+sound:Play()
+sound.Ended:Connect(function()
+    sound:Destroy()
+end)
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "🔔 Notificação",
+    Text = "👻 NOCLIP ATIVO!",
+    Icon = "rbxassetid://13264701341",
+    Duration = 5
+})
