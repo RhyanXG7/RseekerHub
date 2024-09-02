@@ -59,19 +59,16 @@ local function ESP(objeto, texto, cor)
     Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop -- Garante visibilidade através de objetos
     Highlight.Parent = objeto
 
-    -- Verifica continuamente se o objeto ainda está no jogo
-    local rsConnection
-    rsConnection = game:GetService("RunService").RenderStepped:Connect(function()
-        -- Se o objeto não existir ou não estiver mais no workspace, remove a GUI e o Highlight
-        if not objeto or not objeto:IsDescendantOf(workspace) then
+    -- Destrói o BillboardGui e o Highlight se o objeto for removido
+    objeto.AncestryChanged:Connect(function(_, parent)
+        if not parent then
             BillboardGui:Destroy()
             Highlight:Destroy()
-            rsConnection:Disconnect()
         end
     end)
 end
 
--- Aplicando ESP a todos os FuseHolders no workspace
+-- Função para aplicar o ESP a todos os FuseHolders existentes
 local function ApplyESPToFuseHolders()
     for _, v in ipairs(workspace:GetDescendants()) do
         if v.Name == "FuseHolder" then
@@ -80,13 +77,14 @@ local function ApplyESPToFuseHolders()
     end
 end
 
--- Verifica se novos FuseHolders são adicionados ao jogo
+-- Detecta novos FuseHolders que são adicionados ao jogo
 workspace.DescendantAdded:Connect(function(inst)
     if inst.Name == "FuseHolder" then
         ESP(inst, "[Fusível]", Color3.fromRGB(255, 0, 0))
     end
 end)
 
+-- Inicializa o ESP para FuseHolders já existentes
 ApplyESPToFuseHolders()
 
 local sound = Instance.new("Sound")
