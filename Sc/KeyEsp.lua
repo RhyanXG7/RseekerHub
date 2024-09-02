@@ -1,85 +1,41 @@
 local KeyChams = {}
-local VisualsTab = {} -- Supondo que você tenha definido a aba VisualsTab em outro lugar
-local isEnabled = false -- Controle de ativação/desativação
-local player = game.Players.LocalPlayer
-local camera = game.Workspace.CurrentCamera
-local drawingService = game:GetService("Drawing")
-
-local function createLine(from, to, color, thickness)
-    local line = Drawing.new("Line")
-    line.From = from
-    line.To = to
-    line.Color = color
-    line.Thickness = thickness
-    line.Visible = true
-    return line
-end
+local SelectedObject = nil -- Variável para armazenar o objeto selecionado
 
 local function ApplyKeyChams(inst)
+    wait()
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     Cham.FillColor = Color3.new(0.980392, 0.670588, 0)
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(0.792156, 0.792156, 0.792156)
-    Cham.Parent = inst
+    Cham.Parent = game:GetService("CoreGui")
     Cham.Adornee = inst
-    Cham.Enabled = isEnabled
+    Cham.Enabled = true
     Cham.RobloxLocked = true
-    
-    if isEnabled then
-        local screenPoint = camera:WorldToScreenPoint(inst.Position)
-        local line = createLine(Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2), Vector2.new(screenPoint.X, screenPoint.Y), Color3.fromRGB(255, 0, 0), 2)
-        table.insert(KeyChams, line)
-    end
-
     return Cham
 end
 
-local function UpdateKeyChams()
-    for _, inst in ipairs(workspace:GetDescendants()) do
-        if inst.Name == "KeyObtain" and not inst:FindFirstChildOfClass("Highlight") then
-            table.insert(KeyChams, ApplyKeyChams(inst))
+local function OnObjectSelected(inst)
+    if SelectedObject then
+        for _, cham in ipairs(KeyChams) do
+            if cham.Adornee == SelectedObject then
+                cham:Destroy()
+            end
         end
     end
+    SelectedObject = inst
+    table.insert(KeyChams, ApplyKeyChams(inst))
 end
-
-local function ToggleKeyChams(Value)
-    isEnabled = Value
-    for _, v in pairs(KeyChams) do
-        if v:IsA("Highlight") then
-            v.Enabled = Value
-        elseif v:IsA("Drawing") then
-            v.Visible = Value
-        end
+Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
+    if inst.Name == "KeyObtain" then
+        OnObjectSelected(inst)
     end
-end
+end)
 
-VisualsTab:AddToggle({
-    Name = "Key Chams",
-    Default = false,
-    Flag = "KeyToggle",
-    Save = true,
-    Callback = function(Value)
-        ToggleKeyChams(Value)
-        if Value then
-            UpdateKeyChams()
-            workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-                if inst.Name == "KeyObtain" and not inst:FindFirstChildOfClass("Highlight") then
-                    table.insert(KeyChams, ApplyKeyChams(inst))
-                end
-            end)
-        end
-    end    
-})
-
-if VisualsTab.Flags["KeyToggle"].Value then
-    ToggleKeyChams(true)
-    UpdateKeyChams()
-    workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "KeyObtain" and not inst:FindFirstChildOfClass("Highlight") then
-            table.insert(KeyChams, ApplyKeyChams(inst))
-        end
-    end)
+for i, v in ipairs(Workspace:GetDescendants()) do
+    if v.Name == "KeyObtain" then
+        OnObjectSelected(v)
+    end
 end
 
 local sound = Instance.new("Sound")
@@ -90,3 +46,9 @@ sound:Play()
 sound.Ended:Connect(function()
     sound:Destroy()
 end)
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "🔔 Notificação",
+    Text = "🔑 ESP KEY ATIVO!",
+    Icon = "rbxassetid://13264701341",
+    Duration = 5
+})
