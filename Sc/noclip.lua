@@ -1,79 +1,36 @@
 local RunService = game:GetService("RunService")
 local player = game.Players.LocalPlayer
+local noClipActive = false -- Variável para controlar o estado do NoClip
 
--- Variável para controlar o estado do NoClip
-local noClipEnabled = false
-local noClipConnection
+-- Referência ao botão de GUI
+local button = script.Parent
+button.Position = UDim2.new(0.5, -button.Size.X.Offset / 2, 0, 0) -- Posiciona o botão no topo da tela
+button.Text = "Enable NoClip" -- Texto inicial do botão
 
--- Função para alternar o NoClip
-local function toggleNoClip()
+-- Função para aplicar ou remover NoClip
+local function applyNoClip()
     local character = player.Character or player.CharacterAdded:Wait()
-
-    -- Função para desativar a colisão
-    local function disableCollision()
-        for _, part in pairs(character:GetChildren()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = false
-            end
+    for _, part in pairs(character:GetChildren()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = not noClipActive
         end
-    end
-
-    if noClipEnabled then
-        -- Desativa o NoClip
-        if noClipConnection then
-            noClipConnection:Disconnect()
-            noClipConnection = nil
-        end
-        -- Restaurar a colisão das partes do personagem
-        for _, part in pairs(character:GetChildren()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = true
-            end
-        end
-        print("NoClip desativado.")
-    else
-        -- Ativa o NoClip
-        noClipConnection = RunService.Stepped:Connect(function()
-            disableCollision()
-        end)
-        print("NoClip ativado.")
-    end
-
-    -- Alterna o estado
-    noClipEnabled = not noClipEnabled
-end
-
--- Adicionar o botão na aba existente
-Tab:AddButton({
-    Name = "Toggle NoClip",
-    Callback = function()
-        toggleNoClip()
-    end    
-})
-
-local StarterGui = game:GetService("StarterGui")
-
-local Notifications = {
-    "👻 NoClip Ativo",
-    "♥️ RSeeker HUB",
-}
-
-local TimeBetweenNotifications = 5 -- Substitua 5 pelo número de segundos que deseja esperar entre as notificações
-
--- Função para enviar notificações uma de cada vez
-local function sendNotifications()
-    for i = 1, #Notifications do
-        local Notification = Notifications[i]
-        
-        StarterGui:SetCore("SendNotification", {
-            Title = "RSeekerHUB",
-            Text = Notification,
-            Duration = 5
-        })
-        
-        wait(TimeBetweenNotifications)
     end
 end
 
--- Enviar notificações ao iniciar o script
-sendNotifications()
+local function toggleNoClip()
+    noClipActive = not noClipActive
+    button.Text = noClipActive and "Disable NoClip" or "Enable NoClip" -- Atualiza o texto do botão
+    applyNoClip() -- Aplica imediatamente o estado de NoClip ao alternar
+end
+
+-- Alternar o NoClip quando o botão é clicado
+button.MouseButton1Click:Connect(function()
+    toggleNoClip()
+end)
+
+-- Aplicar NoClip constantemente enquanto estiver ativo
+RunService.Stepped:Connect(function()
+    if noClipActive then
+        applyNoClip()
+    end
+end)
