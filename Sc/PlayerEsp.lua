@@ -1,10 +1,53 @@
--- Função para criar ESP
+local KeyChams = {keyMarkers = {}}
+local isEnabled = false 
+local camera = game.Workspace.CurrentCamera
+
+
+local function createLine(from, to, color, thickness)
+    local line = Drawing.new("Line")
+    line.From = from
+    line.To = to
+    line.Color = color
+    line.Thickness = thickness
+    line.Visible = true
+    return line
+end
 local function createESP(player)
     local highlight = Instance.new("Highlight")
     highlight.Adornee = player.Character
     highlight.FillColor = Color3.fromRGB(0, 255, 0)
     highlight.OutlineColor = Color3.fromRGB(0, 255, 0)
     highlight.Parent = player.Character
+end
+
+local function updateLines()
+
+    for _, marker in ipairs(KeyChams.keyMarkers) do
+        marker.Visible = false
+        marker:Destroy()
+    end
+    KeyChams.keyMarkers = {}
+
+    local screenBottomCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y)
+
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local humanoidRootPart = player.Character.HumanoidRootPart
+            local screenPoint, onScreen = camera:WorldToScreenPoint(humanoidRootPart.Position)
+
+
+            
+            if onScreen then
+                local line = createLine(
+                    screenBottomCenter,
+                    Vector2.new(screenPoint.X, screenPoint.Y),
+                    Color3.fromRGB(255, 0, 0),
+                    2
+                )
+                table.insert(KeyChams.keyMarkers, line)
+            end
+        end
+    end
 end
 
 local function updateGUI(player, gui)
@@ -38,7 +81,7 @@ local function createGUI(player)
     end)
 end
 
-for _, player in pairs(game.Players:GetPlayers()) do
+local function setupPlayer(player)
     if player.Character then
         createESP(player)
         createGUI(player)
@@ -49,13 +92,13 @@ for _, player in pairs(game.Players:GetPlayers()) do
     end)
 end
 
--- Adicionar ESP e GUI para novos jogadores
-game.Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function(character)
-        createESP(player)
-        createGUI(player)
-    end)
-end)
+for _, player in pairs(game.Players:GetPlayers()) do
+    setupPlayer(player)
+end
+
+game.Players.PlayerAdded:Connect(setupPlayer)
+
+game:GetService("RunService").RenderStepped:Connect(updateLines)
 
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
@@ -65,6 +108,7 @@ sound:Play()
 sound.Ended:Connect(function()
     sound:Destroy()
 end)
+
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "🔔 Notificação",
     Text = "🎮 ESP JOGADORES ATIVO!",
