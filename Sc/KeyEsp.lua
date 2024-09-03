@@ -13,14 +13,22 @@ local function ApplyKeyChams(inst)
     Cham.Parent = game:GetService("CoreGui")
     Cham.RobloxLocked = true
 
-    -- Adicionando a legenda "[Chave]" com ESP em vermelho
+    -- Adicionando a legenda "[Chave]" com ESP em azul
+    local BillboardGui = Instance.new("BillboardGui")
+    BillboardGui.Adornee = inst
+    BillboardGui.Size = UDim2.new(0, 100, 0, 50)
+    BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
+    BillboardGui.AlwaysOnTop = true  -- Tornar visível através das paredes
+    BillboardGui.Parent = Cham
+
     local Label = Instance.new("TextLabel")
     Label.Text = "[Chave]"
-    Label.TextColor3 = Color3.new(1, 0, 0)  -- Cor vermelha
+    Label.TextColor3 = Color3.new(0, 0, 1)  -- Cor azul
     Label.BackgroundTransparency = 1
-    Label.Size = UDim2.new(0, 100, 0, 50)
-    Label.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Label.Parent = Cham
+    Label.Size = UDim2.new(1, 0, 1, 0)
+    Label.TextScaled = false  -- Desativar escalonamento do texto
+    Label.TextSize = 14  -- Tamanho fixo do texto
+    Label.Parent = BillboardGui
 
     return Cham
 end
@@ -58,6 +66,7 @@ for _, v in ipairs(Workspace:GetDescendants()) do
         OnObjectSelected(v)
     end
 end
+
 
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
