@@ -11,12 +11,11 @@ local function ApplyBookChams(inst)
     Cham.Enabled = true
     Cham.RobloxLocked = true
 
-    -- Adicionando a legenda "[Livro]" com cor aleatória
     local BillboardGui = Instance.new("BillboardGui")
     BillboardGui.Adornee = inst
     BillboardGui.Size = UDim2.new(0, 100, 0, 50)
     BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
-    BillboardGui.AlwaysOnTop = true  -- Tornar visível através das paredes
+    BillboardGui.AlwaysOnTop = true  -- Objeto visível através das paredes
     BillboardGui.Parent = Cham
 
     local Label = Instance.new("TextLabel")
@@ -25,7 +24,7 @@ local function ApplyBookChams(inst)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
     Label.TextScaled = false  -- Desativar escalonamento do texto
-    Label.TextSize = 12  -- Fonte um pouco menor
+    Label.TextSize = 12  -- Tamanho da Fonte
     Label.Parent = BillboardGui
 
     return Cham
