@@ -1,10 +1,9 @@
--- ISSO AVISA WAUNDO NÃO AH FUNÇÕES NAS PÁGINAS. -- RHYAN57.
-loadstring(game:HttpGet("https://pastebin.com/raw/qH9PEhfQ"))()
+-- ISSO AVISA QAUNDO NÃO AH FUNÇÕES NAS PÁGINAS. -- RHYAN57.
 
 -- ERROR
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://5914602124"
-sound.Volume = 1
+sound.Volume = 4
 sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 sound:Play()
 sound.Ended:Connect(function()
