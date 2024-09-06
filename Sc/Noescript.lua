@@ -12,6 +12,6 @@ end)
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "⚠️ !ATENÇÃO! ⚠️",
     Text = "Não a scripts configurados neste local! ",
-    Icon = "rbxassetid://13264701341",
+    Icon = "rbxassetid://696390631",
     Duration = 9
 })
