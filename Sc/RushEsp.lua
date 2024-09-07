@@ -1,22 +1,7 @@
-local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://3458224686"
-sound.Volume = 1
-sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-sound:Play()
-sound.Ended:Connect(function()
-    sound:Destroy()
-end)
-game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "🔔 Notificação",
-    Text = "👹 Esp Ambush Ativo!",
-    Icon = "rbxassetid://13264701341",
-    Duration = 5
-})
-
-local AmbushChams = {}
+local RushChams = {}
 local SelectedObject = nil
 
-local function ApplyAmbushChams(inst)
+local function ApplyRushChams(inst)
     if not inst:IsDescendantOf(game.Workspace) then return nil end
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
@@ -25,7 +10,8 @@ local function ApplyAmbushChams(inst)
     Cham.OutlineColor = Color3.new(0, 0, 0.5)
     Cham.Adornee = inst
     Cham.Enabled = true
-    Cham.Parent = inst
+    Cham.Parent = game:GetService("CoreGui")
+    Cham.RobloxLocked = true
 
     local BillboardGui = Instance.new("BillboardGui")
     BillboardGui.Adornee = inst
@@ -35,7 +21,7 @@ local function ApplyAmbushChams(inst)
     BillboardGui.Parent = inst
 
     local Label = Instance.new("TextLabel")
-    Label.Text = "[Ambush]"
+    Label.Text = "[Rush]"
     Label.TextColor3 = Color3.new(0, 0, 0.5)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
@@ -48,11 +34,11 @@ end
 
 local function OnObjectDeselected()
     if SelectedObject then
-        for i = #AmbushChams, 1, -1 do
-            local cham = AmbushChams[i]
+        for i = #RushChams, 1, -1 do
+            local cham = RushChams[i]
             if cham.Adornee == SelectedObject then
                 cham:Destroy()
-                table.remove(AmbushChams, i)
+                table.remove(RushChams, i)
             end
         end
         SelectedObject = nil
@@ -62,46 +48,41 @@ end
 local function OnObjectSelected(inst)
     OnObjectDeselected()
     SelectedObject = inst
-    local cham = ApplyAmbushChams(inst)
+    local cham = ApplyRushChams(inst)
     if cham then
-        table.insert(AmbushChams, cham)
+        table.insert(RushChams, cham)
     end
-    
-    -- Som e notificação
-    local sound = Instance.new("Sound")
-    sound.SoundId = "rbxassetid://3458224686"
-    sound.Volume = 1
-    sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-    sound:Play()
-    sound.Ended:Connect(function()
-        sound:Destroy()
-    end)
-    
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "🔔 Notificação",
-        Text = "👹 Esp Ambush Ativo!",
-        Icon = "rbxassetid://13264701341",
-        Duration = 5
-    })
 end
 
 Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-    if inst.Name == "AmbushMoving" then
+    if inst.Name == "RushMoving" then
         OnObjectSelected(inst)
     end
 end)
 
-for _, v in ipairs(Workspace:GetDescendants()) do
-    if v.Name == "AmbushMoving" then
-        OnObjectSelected(v)
-    end
-end
-
 while true do
     for _, v in ipairs(Workspace:GetDescendants()) do
-        if v.Name == "AmbushMoving" and not v:FindFirstChildOfClass("Highlight") then
+        if v.Name == "RushMoving" and not v:FindFirstChildOfClass("Highlight") then
             OnObjectSelected(v)
         end
     end
     wait(1)
 end
+
+-- KAKAKAKA LARGA DE SER LADRÃO, FAZ SEU CÓDIGO.
+
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://3458224686"
+sound.Volume = 1
+sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+sound:Play()
+sound.Ended:Connect(function()
+    sound:Destroy()
+end)
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "🔔 Notificação",
+    Text = "👹 Esp Rush ativo!",
+    Icon = "rbxassetid://13264701341",
+    Duration = 5
+})
+
