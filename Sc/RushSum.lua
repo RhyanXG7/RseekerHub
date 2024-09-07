@@ -1,3 +1,4 @@
+
 local function ExecuteCustomScript(inst)
   
 local sound = Instance.new("Sound")
@@ -40,8 +41,8 @@ sound.Ended:Connect(function()
     sound:Destroy()
 end)
 game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "🔔 Notificação",
-    Text = "⚠️ Notificação para rush ativa!",
+    Title = "🔔 Notificação ",
+    Text = "⚠️ Notificação rush ativa!",
     Icon = "rbxassetid://13264701341",
     Duration = 5
 })
