@@ -1,42 +1,47 @@
+local entities = {
+    "RushMoving"
+}
+local player = game.Players.LocalPlayer
 
-local processedObjects = {}
-
-local function ExecuteCustomScript(inst)
-    if not processedObjects[inst] then
-        processedObjects[inst] = true 
-        
-        local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://3458224686"
-sound.Volume = 1
-sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-sound:Play()
-sound.Ended:Connect(function()
-    sound:Destroy()
-end)
-game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "🔔 Notificação",
-    Text = "⚠️ Rush Nasceu, esconda-se!",
-    Icon = "rbxassetid://13264701341",
-    Duration = 5
-})
-        print("Rush! : " .. inst.Name)
-    end
+local function playNotif(soundId)
+    local Notification = Instance.new("Sound")
+    Notification.Parent = game.SoundService
+    Notification.SoundId = soundId or "rbxassetid://4590656842"
+    Notification.Volume = 5
+    Notification.PlayOnRemove = true
+    Notification:Play()
+    task.delay(2, function() -- Ajustar o tempo de espera para tocar o som
+        Notification:Destroy()
+    end)
 end
 
-Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-    if inst.Name == "RushMoving" then 
-        ExecuteCustomScript(inst)
-    end
-end)
+local function sendNotification(title, text, icon)
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = title,
+        Text = text,
+        Icon = icon
+    })
+end
 
-while true do
-    for _, v in ipairs(Workspace:GetDescendants()) do
-        if v.Name == "RushMoving" and not processedObjects[v] then
-            ExecuteCustomScript(v)
+workspace.ChildAdded:Connect(function(test)
+    if table.find(entities, test.Name) then
+        repeat
+            task.wait()
+        until (player:DistanceFromCharacter(test:GetPivot().Position) < 1000) or not test:IsDescendantOf(workspace)
+
+        if test:IsDescendantOf(workspace) then
+            print(test.Name)
+
+            if test.Name == "RushMoving" then
+                sendNotification("Rush surgiu", "Entre num armário!", "https://static.wikia.nocookie.net/doors-game/images/4/4d/Rush1.png/revision/latest?cb=20240209082944")
+                playNotif()
+            end
         end
+    elseif test:IsA("Model") and test.PrimaryPart and test.PrimaryPart.Name == "RushNew" then
+        sendNotification(test.Name .. " foi gerado.", "Entre num armário!", "rbxassetid://11401835408")
+        playNotif()
     end
-    wait(1) 
-end
+end)
 
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
