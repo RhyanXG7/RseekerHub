@@ -15,6 +15,10 @@ local Settings = {
     },
     MonitorInterval = 1,
     DistanceThreshold = 1000,
+    Chams = {
+        Color = Color3.new(1, 0, 0),  -- Cor do Chams
+        Transparency = 0.5,
+    },
 }
 
 -- Variáveis
@@ -62,10 +66,31 @@ local function CreateBillboardGui(inst)
     return BillboardGui
 end
 
+local function CreateChams(inst)
+    local chamsPart = Instance.new("Part")
+    chamsPart.Name = "Chams"
+    chamsPart.Size = inst.Size
+    chamsPart.CFrame = inst.CFrame
+    chamsPart.Anchored = true
+    chamsPart.CanCollide = false
+    chamsPart.BrickColor = BrickColor.new(Settings.Chams.Color)
+    chamsPart.Material = Enum.Material.SmoothPlastic
+    chamsPart.Transparency = Settings.Chams.Transparency
+    chamsPart.Parent = inst
+
+    local mesh = Instance.new("SpecialMesh")
+    mesh.MeshType = Enum.MeshType.FileMesh
+    mesh.MeshId = "rbxassetid://0"  -- Usar uma mesh padrão
+    mesh.TextureId = "rbxassetid://0"  -- Usar uma textura padrão
+    mesh.Parent = chamsPart
+
+    return chamsPart
+end
+
 local function ApplySnareChams(inst)
     if not inst:IsDescendantOf(game.Workspace) then return nil end
     
-    -- Remove existing Highlight and BillboardGui
+    -- Remove existing Highlight, BillboardGui, and Chams
     local existingHighlight = inst:FindFirstChildOfClass("Highlight")
     if existingHighlight then
         existingHighlight:Destroy()
@@ -76,11 +101,19 @@ local function ApplySnareChams(inst)
         existingBillboard:Destroy()
     end
 
+    local existingChams = inst:FindFirstChild("Chams")
+    if existingChams then
+        existingChams:Destroy()
+    end
+
     local highlight = CreateHighlight(inst)
     highlight.Parent = inst
 
     local billboardGui = CreateBillboardGui(inst)
     billboardGui.Parent = inst
+
+    local chams = CreateChams(inst)
+    chams.Parent = inst
 
     return highlight
 end
