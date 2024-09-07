@@ -15,7 +15,7 @@ local function ExecuteCustomScript(inst)
         game:GetService("StarterGui"):SetCore("SendNotification", {
             Title = "🔔 Notificação",
             Text = "⚠️ Rush Nasceu, Esconda-se!",
-            Icon = "rbxassetid://13264701341",
+            Icon = "rbxassetid://12443291836",
             Duration = 5
         })
     end
