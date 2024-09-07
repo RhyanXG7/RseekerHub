@@ -2,7 +2,7 @@ local KeyChams = {}
 local SelectedObject = nil
 
 local function ApplyKeyChams(inst)
-    if not inst:IsDescendantOf(game.Workspace) then return nil end  -- Verificação para garantir que o objeto ainda existe
+    if not inst:IsDescendantOf(game.Workspace) then return nil end
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     Cham.FillColor = Color3.new(0.980392, 0.670588, 0)
@@ -13,21 +13,20 @@ local function ApplyKeyChams(inst)
     Cham.Parent = game:GetService("CoreGui")
     Cham.RobloxLocked = true
 
-    -- Adicionando a legenda "[Chave]" com ESP em azul
     local BillboardGui = Instance.new("BillboardGui")
     BillboardGui.Adornee = inst
     BillboardGui.Size = UDim2.new(0, 100, 0, 50)
     BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
-    BillboardGui.AlwaysOnTop = true  -- Tornar visível através das paredes
-    BillboardGui.Parent = Cham
+    BillboardGui.AlwaysOnTop = true
+    BillboardGui.Parent = inst  -- Alterado para inst
 
     local Label = Instance.new("TextLabel")
     Label.Text = "[Chave]"
-    Label.TextColor3 = Color3.new(0, 0, 1)  -- Cor azul
+    Label.TextColor3 = Color3.new(0, 0, 1)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.TextScaled = false  -- Desativar escalonamento do texto
-    Label.TextSize = 14  -- Tamanho fixo do texto
+    Label.TextScaled = false
+    Label.TextSize = 14
     Label.Parent = BillboardGui
 
     return Cham
@@ -47,7 +46,7 @@ local function OnObjectDeselected()
 end
 
 local function OnObjectSelected(inst)
-    OnObjectDeselected()  -- Deselecionar qualquer objeto anterior
+    OnObjectDeselected()
     SelectedObject = inst
     local cham = ApplyKeyChams(inst)
     if cham then
@@ -67,6 +66,7 @@ for _, v in ipairs(Workspace:GetDescendants()) do
     end
 end
 
+-- Not
 
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
