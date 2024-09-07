@@ -1,3 +1,20 @@
+-- Not
+
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://7116606826"
+sound.Volume = 1
+sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+sound:Play()
+sound.Ended:Connect(function()
+    sound:Destroy()
+end)
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "🔔 Notificação ",
+    Text = "⚠️ Notificação rush ativa!",
+    Icon = "rbxassetid://13264701341",
+    Duration = 5
+})
+
 local notifiedEntities = {}
 
 local function ExecuteCustomScript(inst)
@@ -5,7 +22,7 @@ local function ExecuteCustomScript(inst)
         notifiedEntities[inst] = true
 
         local sound = Instance.new("Sound")
-        sound.SoundId = "rbxassetid://3458224686"
+        sound.SoundId = "rbxassetid://7116606826"
         sound.Volume = 1
         sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
         sound:Play()
@@ -36,20 +53,4 @@ while true do
     wait(1)
 end
 
--- Not
-
-local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://7116606826"
-sound.Volume = 1
-sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-sound:Play()
-sound.Ended:Connect(function()
-    sound:Destroy()
-end)
-game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "🔔 Notificação ",
-    Text = "⚠️ Notificação rush ativa!",
-    Icon = "rbxassetid://13264701341",
-    Duration = 5
-})
 
