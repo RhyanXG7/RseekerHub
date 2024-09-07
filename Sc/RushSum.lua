@@ -2,7 +2,7 @@ local entities = {
     "RushMoving"
 }
 local player = game.Players.LocalPlayer
-local hasNotified = false
+local notifiedEntities = {} 
 
 local function playNotif(soundId)
     local Notification = Instance.new("Sound")
@@ -25,7 +25,7 @@ local function sendNotification(title, text, icon)
 end
 
 workspace.ChildAdded:Connect(function(test)
-    if not hasNotified and table.find(entities, test.Name) then
+    if table.find(entities, test.Name) and not notifiedEntities[test] then
         local success, position = pcall(function() return test:GetPivot().Position end)
         if success and position then
             local connection
@@ -35,11 +35,11 @@ workspace.ChildAdded:Connect(function(test)
                     if distance < 1000 then
                         sendNotification("Rush surgiu", "Entre num armário!", "rbxassetid://10716032293")
                         playNotif()
-                        hasNotified = true
+                        notifiedEntities[test] = true
                         connection:Disconnect()
                     end
                 else
-                    connection:Disconnect() 
+                    connection:Disconnect()
                 end
             end)
         else
@@ -47,7 +47,6 @@ workspace.ChildAdded:Connect(function(test)
         end
     end
 end)
-
 -- Notificação 
 
 local sound = Instance.new("Sound")
