@@ -2,7 +2,7 @@ local entities = {
     "RushMoving"
 }
 local player = game.Players.LocalPlayer
-local notifiedEntities = {} 
+local notifiedEntities = {}
 
 local function playNotif(soundId)
     local Notification = Instance.new("Sound")
@@ -31,13 +31,10 @@ workspace.ChildAdded:Connect(function(test)
             local connection
             connection = game:GetService("RunService").Heartbeat:Connect(function()
                 if test:IsDescendantOf(workspace) then
-                    local distance = player:DistanceFromCharacter(position)
-                    if distance < 1000 then
-                        sendNotification("Rush surgiu", "Entre num armário!", "rbxassetid://10716032293")
-                        playNotif()
-                        notifiedEntities[test] = true
-                        connection:Disconnect()
-                    end
+                    sendNotification("Rush surgiu", "Entre num armário!", "rbxassetid://10716032293")
+                    playNotif()
+                    notifiedEntities[test] = true
+                    connection:Disconnect()
                 else
                     connection:Disconnect()
                 end
@@ -45,8 +42,15 @@ workspace.ChildAdded:Connect(function(test)
         else
             warn("O objeto não tem um Pivot válido.")
         end
+
+        test.AncestryChanged:Connect(function(_, parent)
+            if not parent then
+                notifiedEntities[test] = nil
+            end
+        end)
     end
 end)
+
 -- Notificação 
 
 local sound = Instance.new("Sound")
