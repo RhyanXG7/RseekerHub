@@ -1,5 +1,3 @@
--- Not
-
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
 sound.Volume = 1
@@ -10,15 +8,15 @@ sound.Ended:Connect(function()
 end)
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "🔔 Notificação",
-    Text = "👹 Esp Rush Ativo!",
+    Text = "👹 Esp Ambush Ativo!",
     Icon = "rbxassetid://13264701341",
     Duration = 5
 })
 
-local RushChams = {}
+local AmbushChams = {}
 local SelectedObject = nil
 
-local function ApplyRushChams(inst)
+local function ApplyAmbushChams(inst)
     if not inst:IsDescendantOf(game.Workspace) then return nil end
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
@@ -37,7 +35,7 @@ local function ApplyRushChams(inst)
     BillboardGui.Parent = inst
 
     local Label = Instance.new("TextLabel")
-    Label.Text = "[Rush]"
+    Label.Text = "[Ambush]"
     Label.TextColor3 = Color3.new(0, 0, 0.5)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
@@ -50,11 +48,11 @@ end
 
 local function OnObjectDeselected()
     if SelectedObject then
-        for i = #RushChams, 1, -1 do
-            local cham = RushChams[i]
+        for i = #AmbushChams, 1, -1 do
+            local cham = AmbushChams[i]
             if cham.Adornee == SelectedObject then
                 cham:Destroy()
-                table.remove(RushChams, i)
+                table.remove(AmbushChams, i)
             end
         end
         SelectedObject = nil
@@ -64,9 +62,9 @@ end
 local function OnObjectSelected(inst)
     OnObjectDeselected()
     SelectedObject = inst
-    local cham = ApplyRushChams(inst)
+    local cham = ApplyAmbushChams(inst)
     if cham then
-        table.insert(RushChams, cham)
+        table.insert(AmbushChams, cham)
     end
     
     -- Som e notificação
@@ -81,31 +79,29 @@ local function OnObjectSelected(inst)
     
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = "🔔 Notificação",
-        Text = "👹 Esp Rush Ativo!",
+        Text = "👹 Esp Ambush Ativo!",
         Icon = "rbxassetid://13264701341",
         Duration = 5
     })
 end
 
 Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-    if inst.Name == "RushMoving" then
+    if inst.Name == "AmbushMoving" then
         OnObjectSelected(inst)
     end
 end)
 
 for _, v in ipairs(Workspace:GetDescendants()) do
-    if v.Name == "RushMoving" then
+    if v.Name == "AmbushMoving" then
         OnObjectSelected(v)
     end
 end
 
 while true do
     for _, v in ipairs(Workspace:GetDescendants()) do
-        if v.Name == "RushMoving" and not v:FindFirstChildOfClass("Highlight") then
+        if v.Name == "AmbushMoving" and not v:FindFirstChildOfClass("Highlight") then
             OnObjectSelected(v)
         end
     end
     wait(1)
 end
-
-
