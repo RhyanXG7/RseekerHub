@@ -9,32 +9,32 @@ local function ESP(objeto, texto, cor)
     local TextLabel = Instance.new("TextLabel")
     TextLabel.Text = texto
     TextLabel.TextColor3 = cor
-    TextLabel.TextSize = 20  -- Tamanho fixo do texto
-    TextLabel.BackgroundTransparency = 1  -- Fundo transparente
+    TextLabel.TextSize = 20 
+    TextLabel.BackgroundTransparency = 1 
     TextLabel.Size = UDim2.new(1, 0, 1, 0)
-    TextLabel.Font = Enum.Font.GothamBold  -- Fonte estilosa
-    TextLabel.TextStrokeTransparency = 0  -- Contorno ativo
-    TextLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)  -- Cor do contorno (preto)
-    TextLabel.TextTransparency = 0.1  -- Ligeira transparência no texto
+    TextLabel.Font = Enum.Font.GothamBold  
+    TextLabel.TextStrokeTransparency = 0  
+    TextLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) 
+    TextLabel.TextTransparency = 0.1  
     TextLabel.Parent = BillboardGui
 
     local Shadow = Instance.new("TextLabel")
     Shadow.Text = texto
-    Shadow.TextColor3 = Color3.fromRGB(0, 0, 0)  -- Sombra preta
+    Shadow.TextColor3 = Color3.fromRGB(0, 0, 0)
     Shadow.TextSize = 20
     Shadow.BackgroundTransparency = 1
     Shadow.Size = UDim2.new(1, 0, 1, 0)
-    Shadow.Position = UDim2.new(0, 2, 0, 2)  -- Deslocamento da sombra
+    Shadow.Position = UDim2.new(0, 2, 0, 2) 
     Shadow.Font = Enum.Font.GothamBold
-    Shadow.TextTransparency = 0.5  -- Transparência da sombra
+    Shadow.TextTransparency = 0.5  
     Shadow.Parent = BillboardGui
 
     local Highlight = Instance.new("Highlight")
-    Highlight.FillColor = Color3.fromRGB(255, 255, 0)  -- Cor amarela para o preenchimento
-    Highlight.OutlineColor = Color3.fromRGB(255, 255, 0)  -- Cor amarela para o contorno
+    Highlight.FillColor = Color3.fromRGB(255, 255, 0) 
+    Highlight.OutlineColor = Color3.fromRGB(255, 255, 0)  
     Highlight.FillTransparency = 0.5
     Highlight.OutlineTransparency = 0.25
-    Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop  -- Garante visibilidade através de objetos
+    Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop 
     Highlight.Parent = objeto
 
     objeto.AncestryChanged:Connect(function(_, parent)
@@ -48,14 +48,14 @@ end
 local function ApplyESPToFuseHolders()
     for _, v in ipairs(workspace:GetDescendants()) do
         if v.Name == "FuseHolder" then
-            ESP(v, "[Fusível]", Color3.fromRGB(255, 0, 0))  -- Cor vermelha para o texto
+            ESP(v, "[Fusível]", Color3.fromRGB(255, 0, 0)) 
         end
     end
 end
 
 workspace.DescendantAdded:Connect(function(inst)
     if inst.Name == "FuseHolder" then
-        ESP(inst, "[Fusível]", Color3.fromRGB(255, 0, 0))  -- Cor vermelha para o texto
+        ESP(inst, "[Fusível]", Color3.fromRGB(255, 0, 0)) 
     end
 end)
 
@@ -75,7 +75,7 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
     Icon = "rbxassetid://13264701341",
     Duration = 5
 })
--- Inicializa o ESP para FuseHolders já existentes
+
 for _, v in ipairs(workspace:GetDescendants()) do
     if v.Name == "FuseHolder" then
         OnObjectSelected(v)
