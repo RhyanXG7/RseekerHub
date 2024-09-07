@@ -1,8 +1,9 @@
+-- Eu seu que você não tem criatividade e veio roubar meu código, poderia pelo menos dar os devidos creditos? @rhyan57.
 local entities = {
     "AmbushMoving"
 }
 local player = game.Players.LocalPlayer
-local notifiedEntities = {}  -- Tabela para armazenar entidades já notificadas
+local notifiedEntities = {}
 
 local function playNotif(soundId)
     local Notification = Instance.new("Sound")
@@ -31,14 +32,10 @@ workspace.ChildAdded:Connect(function(test)
             local connection
             connection = game:GetService("RunService").Heartbeat:Connect(function()
                 if test:IsDescendantOf(workspace) then
-                    local distance = player:DistanceFromCharacter(position)
-
-                    if distance < 1000 then
-                        sendNotification("Ambush surgiu", "Entre num armário!", "rbxassetid://10722835168")
-                        playNotif()
-                        notifiedEntities[test] = true  -- Marca esta entidade como notificada
-                        connection:Disconnect()
-                    end
+                    sendNotification("Ambush surgiu", "Entre num armário!", "rbxassetid://10722835168")
+                    playNotif()
+                    notifiedEntities[test] = true
+                    connection:Disconnect()
                 else
                     connection:Disconnect()
                 end
@@ -48,7 +45,6 @@ workspace.ChildAdded:Connect(function(test)
         end
     end
 end)
-
 
 -- Notificação 
 
