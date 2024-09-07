@@ -39,7 +39,7 @@ end
 -- Not
 
 local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://3458224686"
+sound.SoundId = "rbxassetid://7116606826"
 sound.Volume = 1
 sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 sound:Play()
