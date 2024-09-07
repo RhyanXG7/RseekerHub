@@ -1,5 +1,3 @@
--- Not
-
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://7116606826"
 sound.Volume = 1
@@ -8,12 +6,15 @@ sound:Play()
 sound.Ended:Connect(function()
     sound:Destroy()
 end)
+
 game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "🔔 Notificação ",
+    Title = "🔔 Notificação",
     Text = "⚠️ Notificação rush ativa!",
     Icon = "rbxassetid://13264701341",
     Duration = 5
 })
+
+wait(5)
 
 local notifiedEntities = {}
 
@@ -29,6 +30,7 @@ local function ExecuteCustomScript(inst)
         sound.Ended:Connect(function()
             sound:Destroy()
         end)
+
         game:GetService("StarterGui"):SetCore("SendNotification", {
             Title = "🔔 Notificação",
             Text = "⚠️ Rush Nasceu, Esconda-se!",
@@ -44,13 +46,9 @@ Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
     end
 end)
 
-while true do
-    for _, v in ipairs(Workspace:GetDescendants()) do
-        if v.Name == "RushMoving" and not notifiedEntities[v] then
-            ExecuteCustomScript(v)
-        end
+for _, v in ipairs(Workspace:GetDescendants()) do
+    if v.Name == "RushMoving" and not notifiedEntities[v] then
+        ExecuteCustomScript(v)
     end
-    wait(1)
 end
-
 
