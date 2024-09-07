@@ -2,7 +2,7 @@ local entities = {
     "Eyes"
 }
 local player = game.Players.LocalPlayer
-local notifiedEntities = {} 
+local notifiedEntities = {}
 
 local function playNotif(soundId)
     local Notification = Instance.new("Sound")
@@ -26,18 +26,21 @@ end
 
 workspace.ChildAdded:Connect(function(test)
     if table.find(entities, test.Name) and not notifiedEntities[test] then
-        repeat
-            task.wait()
-        until (player:DistanceFromCharacter(test:GetPivot().Position) < 1000) or not test:IsDescendantOf(workspace)
-
-        if test:IsDescendantOf(workspace) then
-            print(test.Name)
-
-            if test.Name == "Eyes" then
-                sendNotification("Eyes surgiu", "Olhe para baixo!", "rbxassetid://11537434050")
-                playNotif()
-                notifiedEntities[test] = true 
-            end
+        local success, position = pcall(function() return test:GetPivot().Position end)
+        if success and position then
+            local connection
+            connection = game:GetService("RunService").Heartbeat:Connect(function()
+                if test:IsDescendantOf(workspace) then
+                    sendNotification("Eyes surgiu", "Olhe para baixo!", "rbxassetid://11537434050")
+                    playNotif()
+                    notifiedEntities[test] = true
+                    connection:Disconnect()
+                else
+                    connection:Disconnect()
+                end
+            end)
+        else
+            warn("O objeto não tem um Pivot válido.")
         end
 
         test.AncestryChanged:Connect(function(_, parent)
@@ -47,7 +50,6 @@ workspace.ChildAdded:Connect(function(test)
         end)
     end
 end)
-
 
 -- Notificação 
 
