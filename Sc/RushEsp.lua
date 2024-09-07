@@ -1,17 +1,44 @@
+-- Configurações
+local Settings = {
+    Highlight = {
+        FillColor = Color3.new(1, 0, 0),  -- Vermelho
+        FillTransparency = 0.5,
+        OutlineColor = Color3.new(1, 0, 0),  -- Vermelho
+    },
+    Label = {
+        Text = "[Rush]",
+        TextColor = Color3.new(1, 0, 0),  -- Vermelho
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,  -- Fonte estilosa
+        TextStrokeTransparency = 0,  -- Contorno
+        TextStrokeColor3 = Color3.new(0, 0, 0),  -- Cor do contorno
+    },
+    MonitorInterval = 1,
+    DistanceThreshold = 1000,
+}
+
+-- Variáveis
 local RushChams = {}
 local SelectedObject = nil
+local Connections = {}
+local player = game.Players.LocalPlayer
+
+-- Funções utilitárias
+local function Log(message)
+    print("[INFO]: " .. message)
+end
 
 local function ApplyRushChams(inst)
     if not inst:IsDescendantOf(game.Workspace) then return nil end
+    
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(0, 0, 0.5)
-    Cham.FillTransparency = 0.5
-    Cham.OutlineColor = Color3.new(0, 0, 0.5)
+    Cham.FillColor = Settings.Highlight.FillColor
+    Cham.FillTransparency = Settings.Highlight.FillTransparency
+    Cham.OutlineColor = Settings.Highlight.OutlineColor
     Cham.Adornee = inst
     Cham.Enabled = true
-    Cham.Parent = game:GetService("CoreGui")
-    Cham.RobloxLocked = true
+    Cham.Parent = inst
 
     local BillboardGui = Instance.new("BillboardGui")
     BillboardGui.Adornee = inst
@@ -21,12 +48,17 @@ local function ApplyRushChams(inst)
     BillboardGui.Parent = inst
 
     local Label = Instance.new("TextLabel")
-    Label.Text = "[Rush]"
-    Label.TextColor3 = Color3.new(0, 0, 0.5)
+    Label.Text = Settings.Label.Text
+    Label.TextColor3 = Settings.Label.TextColor
+    Label.TextSize = Settings.Label.TextSize
+    Label.Font = Settings.Label.Font
+    Label.TextStrokeTransparency = Settings.Label.TextStrokeTransparency
+    Label.TextStrokeColor3 = Settings.Label.TextStrokeColor3
+    Label.TextScaled = false
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
     Label.TextScaled = false
-    Label.TextSize = 14
+    Label.TextSize = Settings.Label.TextSize
     Label.Parent = BillboardGui
 
     return Cham
@@ -42,6 +74,7 @@ local function OnObjectDeselected()
             end
         end
         SelectedObject = nil
+        Log("Object deselected and chams removed")
     end
 end
 
@@ -51,38 +84,48 @@ local function OnObjectSelected(inst)
     local cham = ApplyRushChams(inst)
     if cham then
         table.insert(RushChams, cham)
+        Log("Chams applied to selected object: " .. inst.Name)
     end
 end
 
-Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
+local function MonitorWorkspace()
+    while true do
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            if v.Name == "RushMoving" and not v:FindFirstChildOfClass("Highlight") then
+                OnObjectSelected(v)
+            end
+        end
+        wait(Settings.MonitorInterval)
+    end
+end
+
+local function HandleNewInstance(inst)
     if inst.Name == "RushMoving" then
         OnObjectSelected(inst)
-    end
-end)
-
-while true do
-    for _, v in ipairs(Workspace:GetDescendants()) do
-        if v.Name == "RushMoving" and not v:FindFirstChildOfClass("Highlight") then
-            OnObjectSelected(v)
+        
+        repeat
+            task.wait()
+        until (player:DistanceFromCharacter(inst:GetPivot().Position) < Settings.DistanceThreshold) or not inst:IsDescendantOf(workspace)
+        
+        if inst:IsDescendantOf(workspace) then
+            Log("RushMoving detected within range")
         end
     end
-    wait(1)
 end
 
--- KAKAKAKA LARGA DE SER LADRÃO, FAZ SEU CÓDIGO.
+-- Conectar eventos
+table.insert(Connections, Workspace.CurrentRooms.DescendantAdded:Connect(HandleNewInstance))
+table.insert(Connections, workspace.ChildAdded:Connect(HandleNewInstance))
 
-local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://3458224686"
-sound.Volume = 1
-sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-sound:Play()
-sound.Ended:Connect(function()
-    sound:Destroy()
-end)
-game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "🔔 Notificação",
-    Text = "👹 Esp Rush ativo!",
-    Icon = "rbxassetid://13264701341",
-    Duration = 5
-})
+-- Iniciar monitoramento
+Log("Starting to monitor Workspace for RushMoving")
+spawn(MonitorWorkspace)
 
+-- Inicializar com objetos existentes
+for _, v in ipairs(Workspace:GetDescendants()) do
+    if v.Name == "RushMoving" then
+        OnObjectSelected(v)
+    end
+end
+
+Log("Script initialized successfully")
