@@ -34,25 +34,32 @@ spawn(function()
                 txtlbl.TextStrokeTransparency = 0.5
                 txtlbl.TextColor3 = Color3.fromRGB(241, 196, 15)
 
-                local txtlbl2 = Instance.new('TextLabel', bb)
-                txtlbl2.ZIndex = 10
-                txtlbl2.BackgroundTransparency = 1
-                txtlbl2.Position = UDim2.new(0, 0, 0, -15)
-                txtlbl2.Size = UDim2.new(1, 0, 10, 0)
-                txtlbl2.Font = 'ArialBold'
-                txtlbl2.FontSize = 'Size12'
-                txtlbl2.Text = "? Studs"
-                txtlbl2.Name = "Dist"
-                txtlbl2.TextStrokeTransparency = 0.5
-                txtlbl2.TextColor3 = Color3.fromRGB(241, 196, 15)
+                -- Verifica se o TextLabel de distância já existe antes de criar um novo
+                local txtlbl2 = bb:FindFirstChild("Dist")
+                if not txtlbl2 then
+                    txtlbl2 = Instance.new('TextLabel', bb)
+                    txtlbl2.ZIndex = 10
+                    txtlbl2.BackgroundTransparency = 1
+                    txtlbl2.Position = UDim2.new(0, 0, 0, -15)
+                    txtlbl2.Size = UDim2.new(1, 0, 10, 0)
+                    txtlbl2.Font = 'ArialBold'
+                    txtlbl2.FontSize = 'Size12'
+                    txtlbl2.Text = "? Studs"
+                    txtlbl2.Name = "Dist"
+                    txtlbl2.TextStrokeTransparency = 0.5
+                    txtlbl2.TextColor3 = Color3.fromRGB(241, 196, 15)
+                end
             end
 
             if v:FindFirstChild("Door") and v.Door:FindFirstChild("Door") and v.Door.Door:FindFirstChild("DOOR LGD : SeekerHub") then
-                v.Door.Door["DOOR LGD : SeekerHub"].Dist.Text = round((game.Players.LocalPlayer.Character.PrimaryPart.Position - v.Door.Door.Position).magnitude, 1) .. " Studs"
+                local distLabel = v.Door.Door["DOOR LGD : SeekerHub"].Dist
+                distLabel.Text = round((game.Players.LocalPlayer.Character.PrimaryPart.Position - v.Door.Door.Position).magnitude, 1) .. " Studs"
             end
         end
     end
 end)
+
+-- Notificação 
 
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
