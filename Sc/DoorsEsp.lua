@@ -7,19 +7,20 @@ spawn(function()
     while wait(0.04) do
         for _,v in next, workspace.CurrentRooms:GetChildren() do
             if v:FindFirstChild("Door") and v.Door:FindFirstChild("Door") and not v.Door.Door:FindFirstChild("Highlight") then
-                hg = Instance.new("Highlight", v.Door.Door)
+                local hg = Instance.new("Highlight", v.Door.Door)
+                hg.Name = "ESP : SeekerHub" -- Nome alterado para "ESP : SeekerHub"
                 hg.FillColor = Color3.fromRGB(241, 196, 15)
                 hg.FillTransparency = 0.5
     
-                bb = Instance.new('BillboardGui', v.Door.Door)
+                local bb = Instance.new('BillboardGui', v.Door.Door)
                 bb.Adornee = v.Door.Door
                 bb.ExtentsOffset = Vector3.new(0, 1, 0)
                 bb.AlwaysOnTop = true
                 bb.Size = UDim2.new(0, 6, 0, 6)
                 bb.StudsOffset = Vector3.new(0, 1, 0)
-                bb.Name = "BillBoard"
+                bb.Name = "LGD : SeekerHub" -- Nome alterado para "LGD : SeekerHub"
     
-                txtlbl = Instance.new('TextLabel', bb)
+                local txtlbl = Instance.new('TextLabel', bb)
                 txtlbl.ZIndex = 10
                 txtlbl.BackgroundTransparency = 1
                 txtlbl.Position = UDim2.new(0, 0, 0, -45)
@@ -30,7 +31,7 @@ spawn(function()
                 txtlbl.TextStrokeTransparency = 0.5
                 txtlbl.TextColor3 = Color3.fromRGB(241, 196, 15)
     
-                txtlbl2 = Instance.new('TextLabel', bb)
+                local txtlbl2 = Instance.new('TextLabel', bb)
                 txtlbl2.ZIndex = 10
                 txtlbl2.BackgroundTransparency = 1
                 txtlbl2.Position = UDim2.new(0, 0, 0, -15)
@@ -42,12 +43,12 @@ spawn(function()
                 txtlbl2.TextStrokeTransparency = 0.5
                 txtlbl2.TextColor3 = Color3.fromRGB(241, 196, 15)
             end
-            if v:FindFirstChild("Door") and v.Door:FindFirstChild("Door") and v.Door.Door:FindFirstChild("BillBoard") then
-                v.Door.Door.BillBoard.Dist.Text = round((game.Players.LocalPlayer.Character.PrimaryPart.Position - v.Door.Door.Position).magnitude, 1) .. " Studs"
+            if v:FindFirstChild("Door") and v.Door:FindFirstChild("Door") and v.Door.Door:FindFirstChild("LGD : SeekerHub") then
+                v.Door.Door["LGD : SeekerHub"].Dist.Text = round((game.Players.LocalPlayer.Character.PrimaryPart.Position - v.Door.Door.Position).magnitude, 1) .. " Studs"
             end
         end
     end
-end)  
+end)
 
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
