@@ -83,7 +83,7 @@ end
 
 local function MonitorWorkspace()
     while true do
-        for _, v in ipairs(Workspace:GetDescendants()) do
+        for _, v in ipairs(game.Workspace:GetDescendants()) do  -- Corrigido aqui para 'game.Workspace'
             if v.Name == "RushMoving" and not v:FindFirstChildOfClass("Highlight") then
                 OnObjectSelected(v)
             end
@@ -98,23 +98,24 @@ local function HandleNewInstance(inst)
         
         repeat
             task.wait()
-        until (player:DistanceFromCharacter(inst:GetPivot().Position) < Settings.DistanceThreshold) or not inst:IsDescendantOf(workspace)
+        until (player:DistanceFromCharacter(inst:GetPivot().Position) < Settings.DistanceThreshold) or not inst:IsDescendantOf(game.Workspace)
         
-        if inst:IsDescendantOf(workspace) then
+        if inst:IsDescendantOf(game.Workspace) then
         end
     end
 end
 
-table.insert(Connections, Workspace.CurrentRooms.DescendantAdded:Connect(HandleNewInstance))
-table.insert(Connections, workspace.ChildAdded:Connect(HandleNewInstance))
+table.insert(Connections, game.Workspace.CurrentRooms.DescendantAdded:Connect(HandleNewInstance))
+table.insert(Connections, game.Workspace.ChildAdded:Connect(HandleNewInstance))
 
 spawn(MonitorWorkspace)
 
-for _, v in ipairs(Workspace:GetDescendants()) do
+for _, v in ipairs(game.Workspace:GetDescendants()) do
     if v.Name == "RushMoving" then
         OnObjectSelected(v)
     end
 end
+
 -- Not
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
