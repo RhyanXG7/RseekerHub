@@ -3,6 +3,7 @@ local SelectedObject = nil
 
 local function ApplyChestChams(inst)
     if not inst:IsDescendantOf(game.Workspace) then return nil end
+
     local Cham = Instance.new("Highlight")
     Cham.Name = "BAU ESP : SeekerHub"
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
@@ -12,13 +13,12 @@ local function ApplyChestChams(inst)
     Cham.OutlineTransparency = 0
     Cham.Adornee = inst
     Cham.Enabled = true
-    Cham.Parent = game:GetService("CoreGui")
-    Cham.RobloxLocked = true
+    Cham.Parent = inst
 
     local BillboardGui = Instance.new("BillboardGui")
     BillboardGui.Name = "BAU LGD : SeekerHub"
     BillboardGui.Adornee = inst
-    BillboardGui.Size = UDim2.new(0, 100, 0, 50)
+    BillboardGui.Size = UDim2.new(0, 50, 0, 25)
     BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
     BillboardGui.AlwaysOnTop = true
     BillboardGui.Parent = inst
@@ -26,11 +26,11 @@ local function ApplyChestChams(inst)
     local Label = Instance.new("TextLabel")
     Label.Text = "[Baú]"
     Label.TextColor3 = Color3.new(0, 1, 1)
-    Label.Font = Enum.Font.Fantasy
+    Label.Font = Enum.Font.GothamBold 
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.TextScaled = true
-    Label.TextSize = 14
+    Label.TextScaled = false
+    Label.TextSize = 12 
     Label.TextStrokeTransparency = 0
     Label.TextStrokeColor3 = Color3.new(0, 0, 0)
     Label.Parent = BillboardGui
