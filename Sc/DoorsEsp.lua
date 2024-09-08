@@ -1,4 +1,3 @@
--- Eu sei que você não tem criatividade e veio roubar meu código, mas pode pelo menos dá os créditos? -- SeekerHub
 function round(number, decimals)
     local power = 10 ^ decimals
     return math.floor(number * power) / power
@@ -8,11 +7,14 @@ spawn(function()
     while wait(0.04) do
         for _,v in next, workspace.CurrentRooms:GetChildren() do
             if v:FindFirstChild("Door") and v.Door:FindFirstChild("Door") and not v.Door.Door:FindFirstChild("Highlight") then
+        
                 local hg = Instance.new("Highlight", v.Door.Door)
                 hg.Name = "DOOR ESP : SeekerHub"
                 hg.FillColor = Color3.fromRGB(241, 196, 15)
                 hg.FillTransparency = 0.5
-    
+                hg.OutlineTransparency = 0 
+                hg.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop 
+
                 local bb = Instance.new('BillboardGui', v.Door.Door)
                 bb.Adornee = v.Door.Door
                 bb.ExtentsOffset = Vector3.new(0, 1, 0)
@@ -31,7 +33,7 @@ spawn(function()
                 txtlbl.Text = "Door " .. v.Name
                 txtlbl.TextStrokeTransparency = 0.5
                 txtlbl.TextColor3 = Color3.fromRGB(241, 196, 15)
-    
+
                 local txtlbl2 = Instance.new('TextLabel', bb)
                 txtlbl2.ZIndex = 10
                 txtlbl2.BackgroundTransparency = 1
@@ -44,8 +46,9 @@ spawn(function()
                 txtlbl2.TextStrokeTransparency = 0.5
                 txtlbl2.TextColor3 = Color3.fromRGB(241, 196, 15)
             end
-            if v:FindFirstChild("Door") and v.Door:FindFirstChild("Door") and v.Door.Door:FindFirstChild("LGD : SeekerHub") then
-                v.Door.Door["LGD : SeekerHub"].Dist.Text = round((game.Players.LocalPlayer.Character.PrimaryPart.Position - v.Door.Door.Position).magnitude, 1) .. " Studs"
+
+            if v:FindFirstChild("Door") and v.Door:FindFirstChild("Door") and v.Door.Door:FindFirstChild("DOOR LGD : SeekerHub") then
+                v.Door.Door["DOOR LGD : SeekerHub"].Dist.Text = round((game.Players.LocalPlayer.Character.PrimaryPart.Position - v.Door.Door.Position).magnitude, 1) .. " Studs"
             end
         end
     end
