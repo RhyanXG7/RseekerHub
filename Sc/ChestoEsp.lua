@@ -29,7 +29,7 @@ local function ApplyChestChams(inst)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
     Label.TextScaled = false
-    Label.TextSize = 14
+    Label.TextSize = 12
     Label.Parent = BillboardGui
 
     return Cham
