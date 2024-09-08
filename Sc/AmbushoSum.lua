@@ -9,7 +9,7 @@ local function playNotif(soundId)
     local Notification = Instance.new("Sound")
     Notification.Parent = game.SoundService
     Notification.SoundId = soundId or "rbxassetid://4590656842"
-    Notification.Volume = 5
+    Notification.Volume = 1
     Notification.PlayOnRemove = true
     Notification:Play()
     task.delay(2, function() 
