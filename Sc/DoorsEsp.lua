@@ -1,3 +1,4 @@
+-- Eu sei que você não tem criatividade e veio roubar meu código, mas pode pelo menos dá os créditos? -- SeekerHub
 function round(number, decimals)
     local power = 10 ^ decimals
     return math.floor(number * power) / power
@@ -8,7 +9,7 @@ spawn(function()
         for _,v in next, workspace.CurrentRooms:GetChildren() do
             if v:FindFirstChild("Door") and v.Door:FindFirstChild("Door") and not v.Door.Door:FindFirstChild("Highlight") then
                 local hg = Instance.new("Highlight", v.Door.Door)
-                hg.Name = "ESP : SeekerHub" -- Nome alterado para "ESP : SeekerHub"
+                hg.Name = "DOOR ESP : SeekerHub"
                 hg.FillColor = Color3.fromRGB(241, 196, 15)
                 hg.FillTransparency = 0.5
     
@@ -18,7 +19,7 @@ spawn(function()
                 bb.AlwaysOnTop = true
                 bb.Size = UDim2.new(0, 6, 0, 6)
                 bb.StudsOffset = Vector3.new(0, 1, 0)
-                bb.Name = "LGD : SeekerHub" -- Nome alterado para "LGD : SeekerHub"
+                bb.Name = "DOOR LGD : SeekerHub"
     
                 local txtlbl = Instance.new('TextLabel', bb)
                 txtlbl.ZIndex = 10
