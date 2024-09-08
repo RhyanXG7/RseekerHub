@@ -9,6 +9,7 @@ local function ApplyChestChams(inst)
     Cham.FillColor = Color3.new(0, 1, 1)
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(0, 1, 1)
+    Cham.OutlineTransparency = 0
     Cham.Adornee = inst
     Cham.Enabled = true
     Cham.Parent = game:GetService("CoreGui")
@@ -28,8 +29,10 @@ local function ApplyChestChams(inst)
     Label.Font = Enum.Font.Fantasy
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.TextScaled = false
-    Label.TextSize = 12
+    Label.TextScaled = true
+    Label.TextSize = 14
+    Label.TextStrokeTransparency = 0
+    Label.TextStrokeColor3 = Color3.new(0, 0, 0)
     Label.Parent = BillboardGui
 
     return Cham
