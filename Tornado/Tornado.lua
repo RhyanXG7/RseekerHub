@@ -1,3 +1,4 @@
+-- MOST OF THIS CODE IS FROM INFINITE YIELD TPUA COMMAND
 loadstring(game:HttpGet("https://raw.githubusercontent.com/hellohellohell012321/discordpopup/main/discord-popup",true))() -- discord invite
 
 local G2L = {}
@@ -108,106 +109,60 @@ G2L["10"]["CornerRadius"] = UDim.new(0, 2)
 bgscript = Instance.new("LocalScript", bgbutton)
 dragscript = Instance.new("LocalScript", G2L["2"])
 dragscript["Name"] = [[drag]]
-
 local function C_a()
     local script = killscript
     local player = game.Players.LocalPlayer
     local button = script.Parent
-    local function buttonclicked()
-        local coolio = tonumber(timebox.Text)
-        local Players = game:GetService("Players")
+  local function buttonclicked()
+    local coolio = tonumber(timebox.Text)
+    local Players = game:GetService("Players")
 
-        -- Function to find a player by their display name or username
-        local function findPlayer(input)
-            local inputLower = string.lower(input)
-            for _, player in ipairs(Players:GetPlayers()) do
-                local displayName = player.DisplayName
-                local username = player.Name
-                -- Check if display name matches (exact or partial)
-                if string.find(string.lower(displayName), inputLower, 1, true) then
-                    return player
-                end
-                -- Check if username matches (exact or partial)
-                if string.find(string.lower(username), inputLower, 1, true) then
-                    return player
-                end
+    -- Function to find a player by their display name or username
+    local function findPlayer(input)
+        local inputLower = string.lower(input)
+        for _, player in ipairs(Players:GetPlayers()) do
+            local displayName = player.DisplayName
+            local username = player.Name
+            -- Check if display name matches (exact or partial)
+            if string.find(string.lower(displayName), inputLower, 1, true) then
+                return player
             end
-            return nil
+                        -- Check if username matches (exact or partial)
+            if string.find(string.lower(username), inputLower, 1, true) then
+                return player
+            end
         end
+        return nil -- Return nil if no match is found
+    end
 
-                -- Find the target player
-        local input = targetbox.Text
-        local targetPlayer = findPlayer(input)
+    button.MouseButton1Click:Connect(function()
+        local target = findPlayer(targetbox.Text)
+        if target then
+            -- Teleport loop
+            while true do
+                wait(0.1) -- Adjust this delay as needed
+                if coolio then
+                    game:GetService("TweenService"):Create(button, TweenInfo.new(coolio), {TextTransparency = 1}):Play()
+                    wait(coolio)
+                    break
+                end
 
-        if targetPlayer then
-            -- Create a BodyPosition to bring the target closer
-            local humanoidRootPart = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-            if humanoidRootPart then
-                local bodyPosition = Instance.new("BodyPosition")
-                bodyPosition.MaxForce = Vector3.new(1e9, 1e9, 1e9) -- Force to move the target
-                bodyPosition.Position = player.Character.HumanoidRootPart.Position -- Bring them to your position
-                bodyPosition.Parent = humanoidRootPart
-                wait(coolio) -- Duration for which the target is held
+                -- Check if the player is still in-game
+                if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+                    break
+                end
 
-                -- Optionally, remove the BodyPosition after the duration
-                bodyPosition:Destroy()
+                -- Teleport player infinitely (or until condition breaks)
+                local distance = 999999 -- Define a huge number to simulate infinite distance
+                local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    humanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame
+                end
             end
         else
-            print("Target not found!")
-        end
-    end
-    button.MouseButton1Click:Connect(buttonclicked)
-end
-task.spawn(C_a)
-
-local function C_b()
-    local script = bgscript
-    local player = game.Players.LocalPlayer
-    local button = script.Parent
-    local function buttonclicked()
-        game:GetService("CoreGui").ScreenGui.Frame.ImageLabel.Image = "rbxassetid://18923878915"
-    end
-    button.MouseButton1Click:Connect(buttonclicked)
-end
-task.spawn(C_b)
-
-local function C_c()
-    local script = dragscript
-    local UserInputService = game:GetService("UserInputService")
-    local gui = script.Parent
-    local dragging
-    local dragInput
-    local dragStart
-    local startPos
-
-    local function update(input)
-        local delta = input.Position - dragStart
-        gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-
-    gui.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = gui.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-
-    gui.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
-        end
-    end)
-
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if dragging and input == dragInput then
-            update(input)
+            print("Player not found!")
         end
     end)
 end
-task.spawn(C_c)
+C_a()
+    
