@@ -7,7 +7,7 @@ local function ApplyBaseChams(inst)
     local Cham = Instance.new("Highlight")
     Cham.Name = "BASE ESP : SeekerHub"
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(0.678, 1, 0.184) -- Verde claro
+    Cham.FillColor = Color3.new(0.678, 1, 0.184) 
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(0.5, 0.5, 0.5)
     Cham.OutlineTransparency = 0
@@ -25,8 +25,8 @@ local function ApplyBaseChams(inst)
 
     local Label = Instance.new("TextLabel")
     Label.Text = "[Disjuntor]"
-    Label.TextColor3 = Color3.new(0.678, 1, 0.184) -- Verde claro
-    Label.Font = Enum.Font.Fantasy -- Fonte estilosa
+    Label.TextColor3 = Color3.new(0.678, 1, 0.184)
+    Label.Font = Enum.Font.Fantasy 
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
     Label.TextScaled = true
