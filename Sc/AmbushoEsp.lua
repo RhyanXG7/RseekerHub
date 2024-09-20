@@ -1,3 +1,5 @@
+local ESPEnabled = _G.AmbushESPEnabled or false
+_G.AmbushESPEnabled = ESPEnabled
 local AmbushChams = {}
 local folder = Instance.new("Folder")
 folder.Name = "[ AmbushMoving : RSeekerHub ]"
@@ -9,6 +11,7 @@ local function ApplyAmbushChams(inst)
     Cham.FillColor = Color3.new(0, 1, 0)  -- Cor verde correspondente à legenda "[Ambush]"
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(1, 1, 1)
+    Cham.OutlineTransparency = 0
     Cham.Adornee = inst
     Cham.Enabled = true
     Cham.Parent = folder
@@ -41,22 +44,24 @@ local function OnObjectDeselected()
 end
 
 local function OnObjectSelected(inst)
-    if _G.AmbushESPEnabled then
+    if ESPEnabled then
         OnObjectDeselected()
         local cham = ApplyAmbushChams(inst)
         table.insert(AmbushChams, cham)
     end
 end
 
-local function onEntityAdded(entity)
-    if entity.Name == "AmbushMoving" then
-        OnObjectSelected(entity)
-    end
+local function CheckForNewObjects()
+    workspace.DescendantAdded:Connect(function(inst)
+        if inst.Name == "AmbushMoving" and ESPEnabled then
+            OnObjectSelected(inst)
+        end
+    end)
 end
 
-if _G.AmbushESPEnabled then
+if ESPEnabled then
     folder.Parent = game:GetService("CoreGui")
-    workspace.DescendantAdded:Connect(onEntityAdded)
+    CheckForNewObjects()
 
     for _, v in ipairs(workspace:GetDescendants()) do
         if v.Name == "AmbushMoving" then
@@ -65,7 +70,17 @@ if _G.AmbushESPEnabled then
     end
 end
 
-_G.AmbushESPEnabled = not _G.AmbushESPEnabled
+while wait(1) do
+    if ESPEnabled then
+        for _, v in ipairs(workspace:GetDescendants()) do
+            if v.Name == "AmbushMoving" and not table.find(AmbushChams, function(cham) return cham.Adornee == v end) then
+                OnObjectSelected(v)
+            end
+        end
+    end
+end
+
+_G.AmbushESPEnabled = not ESPEnabled
 
 
 -- Notificação
