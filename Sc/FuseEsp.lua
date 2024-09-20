@@ -1,4 +1,3 @@
-
 local ESPEnabled = _G.FuseHolderESPEnabled or false
 _G.FuseHolderESPEnabled = ESPEnabled
 local FuseHolderChams = {}
@@ -9,7 +8,7 @@ folder.Parent = game:GetService("CoreGui")
 local function ApplyFuseHolderChams(inst)
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(0, 1, 0)  -- Cor verde correspondente à legenda "[Fusível]"
+    Cham.FillColor = Color3.new(0, 1, 0)
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(1, 1, 1)
     Cham.OutlineTransparency = 0
@@ -26,7 +25,7 @@ local function ApplyFuseHolderChams(inst)
 
     local Label = Instance.new("TextLabel")
     Label.Text = "[Fusível]"
-    Label.TextColor3 = Color3.new(0, 1, 0)  -- Texto verde
+    Label.TextColor3 = Color3.new(0, 1, 0)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
     Label.TextSize = 14
@@ -54,7 +53,7 @@ end
 
 local function CheckForNewObjects()
     Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "FuseHolder" and ESPEnabled then
+        if inst.Name == "FuseHolder" and not ESPEnabled then
             OnObjectSelected(inst)
         end
     end)
@@ -74,7 +73,7 @@ end
 while wait(1) do
     if ESPEnabled then
         for _, v in ipairs(Workspace:GetDescendants()) do
-            if v.Name == "FuseHolder" and not table.find(FuseHolderChams, function(cham) return cham.Adornee == v end) then
+            if v.Name == "FuseHolder" and not table.find(FuseHolderChams, v) then
                 OnObjectSelected(v)
             end
         end
