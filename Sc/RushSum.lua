@@ -31,7 +31,7 @@ workspace.ChildAdded:Connect(function(test)
             local connection
             connection = game:GetService("RunService").Heartbeat:Connect(function()
                 if test:IsDescendantOf(workspace) then
-                    sendNotification("Rush surgiu", "Entre num armário!", "rbxassetid://10716032293")
+                    sendNotification("Rush surgiu", "Entre num armário!", "rbxassetid://120225720431210")
                     playNotif()
                     notifiedEntities[test] = true
                     connection:Disconnect()
