@@ -32,35 +32,42 @@ local function ApplyRushMovingChams(inst)
     Label.Font = Enum.Font.GothamBold
     Label.Parent = BillboardGui
 
-    return Cham
+    return {Cham = Cham, BillboardGui = BillboardGui}
 end
 
-local function OnObjectDeselected()
+local function RemoveCham(inst)
     for i = #RushMovingChams, 1, -1 do
-        local cham = RushMovingChams[i]
-        cham:Destroy()
-        table.remove(RushMovingChams, i)
+        if RushMovingChams[i].Cham.Adornee == inst then
+            RushMovingChams[i].Cham:Destroy()
+            RushMovingChams[i].BillboardGui:Destroy()
+            table.remove(RushMovingChams, i)
+        end
     end
 end
 
 local function OnObjectSelected(inst)
     if ESPEnabled then
-        OnObjectDeselected()
+        RemoveCham(inst)
         local cham = ApplyRushMovingChams(inst)
         table.insert(RushMovingChams, cham)
     end
 end
 
 local function CheckForNewObjects()
-    Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "RushMoving" and not ESPEnabled then
+    Workspace.DescendantAdded:Connect(function(inst)
+        if inst.Name == "RushMoving" then
             OnObjectSelected(inst)
+        end
+    end)
+
+    Workspace.DescendantRemoving:Connect(function(inst)
+        if inst.Name == "RushMoving" then
+            RemoveCham(inst)
         end
     end)
 end
 
 if ESPEnabled then
-    folder.Parent = game:GetService("CoreGui")
     CheckForNewObjects()
 
     for _, v in ipairs(Workspace:GetDescendants()) do
