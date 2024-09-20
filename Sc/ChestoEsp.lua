@@ -36,42 +36,6 @@ local function ApplyChestChams(inst)
     Label.Parent = BillboardGui
 
     return Cham
-end
-
-local function OnObjectDeselected()
-    if SelectedObject then
-        for i = #ChestChams, 1, -1 do
-            local cham = ChestChams[i]
-            if cham.Adornee == SelectedObject then
-                cham:Destroy()
-                table.remove(ChestChams, i)
-            end
-        end
-        SelectedObject = nil
-    end
-end
-
-local function OnObjectSelected(inst)
-    OnObjectDeselected()
-    SelectedObject = inst
-    local cham = ApplyChestChams(inst)
-    if cham then
-        table.insert(ChestChams, cham)
-    end
-end
-
-Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-    if inst.Name == "ChestBox" then
-        OnObjectSelected(inst)
-    end
-end)
-
-for _, v in ipairs(Workspace:GetDescendants()) do
-    if v.Name == "ChestBox" then
-        OnObjectSelected(v)
-    end
-end
-
 -- Notificação
 
 local sound = Instance.new("Sound")
@@ -84,7 +48,7 @@ sound.Ended:Connect(function()
 end)
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "🔔 Notificação",
-    Text = "📦 Esp Baú ativo!",
+    Text = "📦 Esp do Bau agora ativo/desativado.",
     Icon = "rbxassetid://13264701341",
     Duration = 5
 })
