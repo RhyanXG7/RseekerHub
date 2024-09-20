@@ -8,7 +8,7 @@ folder.Parent = game:GetService("CoreGui")
 local function ApplyChestBoxChams(inst)
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(0, 1, 1)  -- Cor ciano correspondente à legenda "[Baú]"
+    Cham.FillColor = Color3.new(0, 1, 1)
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(1, 1, 1)
     Cham.OutlineTransparency = 0
@@ -25,7 +25,7 @@ local function ApplyChestBoxChams(inst)
 
     local Label = Instance.new("TextLabel")
     Label.Text = "[Baú]"
-    Label.TextColor3 = Color3.new(0, 1, 1)  -- Texto ciano
+    Label.TextColor3 = Color3.new(0, 1, 1)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
     Label.TextSize = 14
@@ -53,7 +53,7 @@ end
 
 local function CheckForNewObjects()
     Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "ChestBox" and ESPEnabled then
+        if inst.Name == "ChestBox" and not ESPEnabled then
             OnObjectSelected(inst)
         end
     end)
@@ -73,7 +73,7 @@ end
 while wait(1) do
     if ESPEnabled then
         for _, v in ipairs(Workspace:GetDescendants()) do
-            if v.Name == "ChestBox" and not table.find(ChestBoxChams, function(cham) return cham.Adornee == v end) then
+            if v.Name == "ChestBox" and not table.find(ChestBoxChams, v) then
                 OnObjectSelected(v)
             end
         end
