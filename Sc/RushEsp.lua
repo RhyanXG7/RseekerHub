@@ -1,120 +1,71 @@
--- Configurações
-local Settings = {
-    Highlight = {
-        FillColor = Color3.new(1, 0, 0),  
-        FillTransparency = 0.5,
-        OutlineColor = Color3.new(1, 0, 0),
-    },
-    Label = {
-        Text = "[Rush]",
-        TextColor = Color3.new(1, 0, 0),
-        TextSize = 14,
-        Font = Enum.Font.GothamBold,
-        TextStrokeTransparency = 0,
-        TextStrokeColor3 = Color3.new(0, 0, 0),
-    },
-    MonitorInterval = 1,
-    DistanceThreshold = 1000,
-}
+local ESPEnabled = _G.RushMovingESPEnabled or false
+_G.RushMovingESPEnabled = ESPEnabled
+local RushMovingChams = {}
+local folder = Instance.new("Folder")
+folder.Name = "[ RushMoving : RSeekerHub ]"
+folder.Parent = game:GetService("CoreGui")
 
-
-local RushChams = {}
-local SelectedObject = nil
-local Connections = {}
-local player = game.Players.LocalPlayer
-
-local function ApplyRushChams(inst)
-    if not inst:IsDescendantOf(game.Workspace) then return nil end
-    
+local function ApplyRushMovingChams(inst)
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Settings.Highlight.FillColor
-    Cham.FillTransparency = Settings.Highlight.FillTransparency
-    Cham.OutlineColor = Settings.Highlight.OutlineColor
+    Cham.FillColor = Color3.new(1, 0, 0)
+        Cham.FillTransparency = 0.5
+    Cham.OutlineColor = Color3.new(1, 1, 1)
     Cham.Adornee = inst
     Cham.Enabled = true
-    Cham.Name = "Rush ESP : SeekerHub"
-    Cham.Parent = inst
+    Cham.Parent = folder
 
     local BillboardGui = Instance.new("BillboardGui")
     BillboardGui.Adornee = inst
     BillboardGui.Size = UDim2.new(0, 100, 0, 50)
     BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
     BillboardGui.AlwaysOnTop = true
-    BillboardGui.Name = "Rush LGD : SeekerHub"
     BillboardGui.Parent = inst
 
     local Label = Instance.new("TextLabel")
-    Label.Text = Settings.Label.Text
-    Label.TextColor3 = Settings.Label.TextColor
-    Label.TextSize = Settings.Label.TextSize
-    Label.Font = Settings.Label.Font
-    Label.TextStrokeTransparency = Settings.Label.TextStrokeTransparency
-    Label.TextStrokeColor3 = Settings.Label.TextStrokeColor3
-    Label.TextScaled = false
+    Label.Text = "[Rush]"
+    Label.TextColor3 = Color3.new(1, 0, 0)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
+    Label.TextSize = 14
+    Label.Font = Enum.Font.GothamBold
     Label.Parent = BillboardGui
 
     return Cham
 end
 
 local function OnObjectDeselected()
-    if SelectedObject then
-        for i = #RushChams, 1, -1 do
-            local cham = RushChams[i]
-            if cham.Adornee == SelectedObject then
-                cham:Destroy()
-                table.remove(RushChams, i)
-            end
-        end
-        SelectedObject = nil
+    for i = #RushMovingChams, 1, -1 do
+        local cham = RushMovingChams[i]
+        cham:Destroy()
+        table.remove(RushMovingChams, i)
     end
 end
 
 local function OnObjectSelected(inst)
-    OnObjectDeselected()
-    SelectedObject = inst
-    local cham = ApplyRushChams(inst)
-    if cham then
-        table.insert(RushChams, cham)
+    if ESPEnabled then
+        OnObjectDeselected()
+        local cham = ApplyRushMovingChams(inst)
+        table.insert(RushMovingChams, cham)
     end
 end
 
-local function MonitorWorkspace()
-    while true do
-        for _, v in ipairs(game.Workspace:GetDescendants()) do  -- Corrigido aqui para 'game.Workspace'
-            if v.Name == "RushMoving" and not v:FindFirstChildOfClass("Highlight") then
-                OnObjectSelected(v)
-            end
+if ESPEnabled then
+    folder.Parent = game:GetService("CoreGui")
+    Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
+        if inst.Name == "RushMoving" then
+            OnObjectSelected(inst)
         end
-        wait(Settings.MonitorInterval)
-    end
-end
+    end)
 
-local function HandleNewInstance(inst)
-    if inst.Name == "RushMoving" then
-        OnObjectSelected(inst)
-        
-        repeat
-            task.wait()
-        until (player:DistanceFromCharacter(inst:GetPivot().Position) < Settings.DistanceThreshold) or not inst:IsDescendantOf(game.Workspace)
-        
-        if inst:IsDescendantOf(game.Workspace) then
+    for _, v in ipairs(Workspace:GetDescendants()) do
+        if v.Name == "RushMoving" then
+            OnObjectSelected(v)
         end
     end
 end
 
-table.insert(Connections, game.Workspace.CurrentRooms.DescendantAdded:Connect(HandleNewInstance))
-table.insert(Connections, game.Workspace.ChildAdded:Connect(HandleNewInstance))
-
-spawn(MonitorWorkspace)
-
-for _, v in ipairs(game.Workspace:GetDescendants()) do
-    if v.Name == "RushMoving" then
-        OnObjectSelected(v)
-    end
-end
+_G.RushMovingESPEnabled = not ESPEnabled
 
 -- Not
 local sound = Instance.new("Sound")
@@ -127,7 +78,7 @@ sound.Ended:Connect(function()
 end)
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "🔔 Notificação",
-    Text = "👹 Esp Rush ativo!",
+    Text = "👹 esp do Rush agora ativo/desativado.",
     Icon = "rbxassetid://13264701341",
     Duration = 5
 })
