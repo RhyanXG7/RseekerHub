@@ -1,14 +1,17 @@
+local ESPEnabled = _G.RushMovingESPEnabled or false
+_G.RushMovingESPEnabled = ESPEnabled
+local RushMovingChams = {}
 local folder = Instance.new("Folder")
 folder.Name = "[ RushMoving : RSeekerHub ]"
 folder.Parent = game:GetService("CoreGui")
-local RushMovingChams = {}
 
 local function ApplyRushMovingChams(inst)
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(1, 0, 0)
+    Cham.FillColor = Color3.new(1, 0, 0)  -- Cor vermelha correspondente à legenda "[Rush]"
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(1, 1, 1)
+    Cham.OutlineTransparency = 0
     Cham.Adornee = inst
     Cham.Enabled = true
     Cham.Parent = folder
@@ -22,7 +25,7 @@ local function ApplyRushMovingChams(inst)
 
     local Label = Instance.new("TextLabel")
     Label.Text = "[Rush]"
-    Label.TextColor3 = Color3.new(1, 0, 0)
+    Label.TextColor3 = Color3.new(1, 0, 0)  -- Texto vermelho
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
     Label.TextSize = 14
@@ -41,22 +44,24 @@ local function OnObjectDeselected()
 end
 
 local function OnObjectSelected(inst)
-    if _G.RushMovingESPEnabled then
+    if ESPEnabled then
         OnObjectDeselected()
         local cham = ApplyRushMovingChams(inst)
         table.insert(RushMovingChams, cham)
     end
 end
 
-local function onEntityAdded(entity)
-    if entity.Name == "RushMoving" then
-        OnObjectSelected(entity)
-    end
+local function CheckForNewObjects()
+    workspace.DescendantAdded:Connect(function(inst)
+        if inst.Name == "RushMoving" and ESPEnabled then
+            OnObjectSelected(inst)
+        end
+    end)
 end
 
-if _G.RushMovingESPEnabled then
+if ESPEnabled then
     folder.Parent = game:GetService("CoreGui")
-    workspace.DescendantAdded:Connect(onEntityAdded)
+    CheckForNewObjects()
 
     for _, v in ipairs(workspace:GetDescendants()) do
         if v.Name == "RushMoving" then
@@ -65,7 +70,17 @@ if _G.RushMovingESPEnabled then
     end
 end
 
-_G.RushMovingESPEnabled = not _G.RushMovingESPEnabled
+while wait(1) do
+    if ESPEnabled then
+        for _, v in ipairs(workspace:GetDescendants()) do
+            if v.Name == "RushMoving" and not table.find(RushMovingChams, function(cham) return cham.Adornee == v end) then
+                OnObjectSelected(v)
+            end
+        end
+    end
+end
+
+_G.RushMovingESPEnabled = not ESPEnabled
 
 -- Not
 local sound = Instance.new("Sound")
