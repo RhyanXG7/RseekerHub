@@ -67,7 +67,7 @@ end
 
 _G.KeyObtainESPEnabled = not ESPEnabled
 
--- Not
+-- Notificação 
 
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
