@@ -1,5 +1,3 @@
-local ESPEnabled = _G.AmbushESPEnabled or false
-_G.AmbushESPEnabled = ESPEnabled
 local AmbushChams = {}
 local folder = Instance.new("Folder")
 folder.Name = "[ AmbushMoving : RSeekerHub ]"
@@ -8,7 +6,7 @@ folder.Parent = game:GetService("CoreGui")
 local function ApplyAmbushChams(inst)
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(0, 1, 0)
+    Cham.FillColor = Color3.new(0, 1, 0)  -- Cor verde correspondente à legenda "[Ambush]"
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(1, 1, 1)
     Cham.Adornee = inst
@@ -24,7 +22,7 @@ local function ApplyAmbushChams(inst)
 
     local Label = Instance.new("TextLabel")
     Label.Text = "[Ambush]"
-    Label.TextColor3 = Color3.new(0, 1, 0)
+    Label.TextColor3 = Color3.new(0, 1, 0)  -- Texto verde
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
     Label.TextSize = 14
@@ -43,29 +41,32 @@ local function OnObjectDeselected()
 end
 
 local function OnObjectSelected(inst)
-    if ESPEnabled then
+    if _G.AmbushESPEnabled then
         OnObjectDeselected()
         local cham = ApplyAmbushChams(inst)
         table.insert(AmbushChams, cham)
     end
 end
 
-if ESPEnabled then
-    folder.Parent = game:GetService("CoreGui")
-    Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "AmbushMoving" then
-            OnObjectSelected(inst)
-        end
-    end)
+local function onEntityAdded(entity)
+    if entity.Name == "AmbushMoving" then
+        OnObjectSelected(entity)
+    end
+end
 
-    for _, v in ipairs(Workspace:GetDescendants()) do
+if _G.AmbushESPEnabled then
+    folder.Parent = game:GetService("CoreGui")
+    workspace.DescendantAdded:Connect(onEntityAdded)
+
+    for _, v in ipairs(workspace:GetDescendants()) do
         if v.Name == "AmbushMoving" then
             OnObjectSelected(v)
         end
     end
 end
 
-_G.AmbushESPEnabled = not ESPEnabled
+_G.AmbushESPEnabled = not _G.AmbushESPEnabled
+
 
 -- Notificação
 
