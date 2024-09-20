@@ -1,15 +1,13 @@
-local ESPEnabled = _G.RushMovingESPEnabled or false
-_G.RushMovingESPEnabled = ESPEnabled
-local RushMovingChams = {}
 local folder = Instance.new("Folder")
 folder.Name = "[ RushMoving : RSeekerHub ]"
 folder.Parent = game:GetService("CoreGui")
+local RushMovingChams = {}
 
 local function ApplyRushMovingChams(inst)
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     Cham.FillColor = Color3.new(1, 0, 0)
-        Cham.FillTransparency = 0.5
+    Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(1, 1, 1)
     Cham.Adornee = inst
     Cham.Enabled = true
@@ -43,29 +41,31 @@ local function OnObjectDeselected()
 end
 
 local function OnObjectSelected(inst)
-    if ESPEnabled then
+    if _G.RushMovingESPEnabled then
         OnObjectDeselected()
         local cham = ApplyRushMovingChams(inst)
         table.insert(RushMovingChams, cham)
     end
 end
 
-if ESPEnabled then
-    folder.Parent = game:GetService("CoreGui")
-    Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "RushMoving" then
-            OnObjectSelected(inst)
-        end
-    end)
+local function onEntityAdded(entity)
+    if entity.Name == "RushMoving" then
+        OnObjectSelected(entity)
+    end
+end
 
-    for _, v in ipairs(Workspace:GetDescendants()) do
+if _G.RushMovingESPEnabled then
+    folder.Parent = game:GetService("CoreGui")
+    workspace.DescendantAdded:Connect(onEntityAdded)
+
+    for _, v in ipairs(workspace:GetDescendants()) do
         if v.Name == "RushMoving" then
             OnObjectSelected(v)
         end
     end
 end
 
-_G.RushMovingESPEnabled = not ESPEnabled
+_G.RushMovingESPEnabled = not _G.RushMovingESPEnabled
 
 -- Not
 local sound = Instance.new("Sound")
