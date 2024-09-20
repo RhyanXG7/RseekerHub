@@ -1,82 +1,74 @@
+local ESPEnabled = _G.AmbushESPEnabled or false
+_G.AmbushESPEnabled = ESPEnabled
 local AmbushChams = {}
-local SelectedObject = nil
+local folder = Instance.new("Folder")
+folder.Name = "[ AmbushMoving : RSeekerHub ]"
+folder.Parent = game:GetService("CoreGui")
 
 local function ApplyAmbushChams(inst)
-    if not inst:IsDescendantOf(game.Workspace) then return nil end
-    
-    
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(0, 1, 0) 
-    Cham.FillTransparency = 0.2 
-    Cham.OutlineColor = Color3.new(0, 1, 0) 
-    Cham.OutlineTransparency = 0 
+    Cham.FillColor = Color3.new(0, 1, 0)
+    Cham.FillTransparency = 0.5
+    Cham.OutlineColor = Color3.new(1, 1, 1)
     Cham.Adornee = inst
     Cham.Enabled = true
-    Cham.Name = "Ambush ESP : SeekerHub"  
-    Cham.Parent = inst
+    Cham.Parent = folder
 
     local BillboardGui = Instance.new("BillboardGui")
     BillboardGui.Adornee = inst
-    BillboardGui.Size = UDim2.new(0, 100, 0, 30) 
+    BillboardGui.Size = UDim2.new(0, 100, 0, 50)
     BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
     BillboardGui.AlwaysOnTop = true
-    BillboardGui.Name = "Ambush LGD : SeekerHub" 
     BillboardGui.Parent = inst
 
     local Label = Instance.new("TextLabel")
     Label.Text = "[Ambush]"
-    Label.TextColor3 = Color3.new(0, 1, 0) 
+    Label.TextColor3 = Color3.new(0, 1, 0)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.TextScaled = false
     Label.TextSize = 14
-    Label.Font = Enum.Font.GothamBold 
-    Label.TextStrokeTransparency = 0.5
-    Label.TextStrokeColor3 = Color3.new(0, 0, 0) 
+    Label.Font = Enum.Font.GothamBold
     Label.Parent = BillboardGui
 
     return Cham
 end
 
 local function OnObjectDeselected()
-    if SelectedObject then
-        for i = #AmbushChams, 1, -1 do
-            local cham = AmbushChams[i]
-            if cham.Adornee == SelectedObject then
-                cham:Destroy()
-                table.remove(AmbushChams, i)
-            end
-        end
-        SelectedObject = nil
+    for i = #AmbushChams, 1, -1 do
+        local cham = AmbushChams[i]
+        cham:Destroy()
+        table.remove(AmbushChams, i)
     end
 end
 
 local function OnObjectSelected(inst)
-    OnObjectDeselected()
-    SelectedObject = inst
-    local cham = ApplyAmbushChams(inst)
-    if cham then
+    if ESPEnabled then
+        OnObjectDeselected()
+        local cham = ApplyAmbushChams(inst)
         table.insert(AmbushChams, cham)
     end
 end
 
-Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-    if inst.Name == "AmbushMoving" then
-        OnObjectSelected(inst)
-    end
-end)
+if ESPEnabled then
+    folder.Parent = game:GetService("CoreGui")
+    Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
+        if inst.Name == "AmbushMoving" then
+            OnObjectSelected(inst)
+        end
+    end)
 
-while true do
     for _, v in ipairs(Workspace:GetDescendants()) do
-        if v.Name == "AmbushMoving" and not v:FindFirstChildOfClass("Highlight") then
+        if v.Name == "AmbushMoving" then
             OnObjectSelected(v)
         end
     end
-    wait(1)
 end
 
--- Not
+_G.AmbushESPEnabled = not ESPEnabled
+
+-- Notificação
+
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
 sound.Volume = 1
@@ -87,7 +79,7 @@ sound.Ended:Connect(function()
 end)
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "🔔 Notificação",
-    Text = "🟢 Esp Ambush ativo!",
+    Text = "🟢 Esp do Ambush Agora ativo/desativado.",
     Icon = "rbxassetid://13264701341",
     Duration = 5
 })
