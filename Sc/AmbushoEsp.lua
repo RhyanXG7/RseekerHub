@@ -1,51 +1,29 @@
-local ESPEnabled = _G.AmbushESPEnabled or false
-_G.AmbushESPEnabled = ESPEnabled
 local AmbushChams = {}
+local ESPEnabled = true
 local folder = Instance.new("Folder")
-folder.Name = "[ AmbushMoving : RSeekerHub ]"
-folder.Parent = game:GetService("CoreGui")
+folder.Name = "ESPFolder"
 
 local function ApplyAmbushChams(inst)
-    local Cham = Instance.new("Highlight")
-    Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(0, 1, 0)  -- Cor verde correspondente à legenda "[Ambush]"
-    Cham.FillTransparency = 0.5
-    Cham.OutlineColor = Color3.new(1, 1, 1)
-    Cham.OutlineTransparency = 0
-    Cham.Adornee = inst
-    Cham.Enabled = true
-    Cham.Parent = folder
-
-    local BillboardGui = Instance.new("BillboardGui")
-    BillboardGui.Adornee = inst
-    BillboardGui.Size = UDim2.new(0, 100, 0, 50)
-    BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
-    BillboardGui.AlwaysOnTop = true
-    BillboardGui.Parent = inst
-
-    local Label = Instance.new("TextLabel")
-    Label.Text = "[Ambush]"
-    Label.TextColor3 = Color3.new(0, 1, 0)  -- Texto verde
-    Label.BackgroundTransparency = 1
-    Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.TextSize = 14
-    Label.Font = Enum.Font.GothamBold
-    Label.Parent = BillboardGui
-
-    return Cham
+    local highlight = Instance.new("Highlight")
+    highlight.Adornee = inst
+    highlight.FillColor = Color3.new(1, 0, 0)
+    highlight.Parent = folder
+    return { highlight = highlight }
 end
 
-local function OnObjectDeselected()
-    for i = #AmbushChams, 1, -1 do
-        local cham = AmbushChams[i]
-        cham:Destroy()
-        table.remove(AmbushChams, i)
+local function RemoveAmbushChams(inst)
+    for i, cham in ipairs(AmbushChams) do
+        if cham.highlight.Adornee == inst then
+            cham.highlight:Destroy()
+            table.remove(AmbushChams, i)
+            break
+        end
     end
 end
 
 local function OnObjectSelected(inst)
     if ESPEnabled then
-        OnObjectDeselected()
+        RemoveAmbushChams(inst)
         local cham = ApplyAmbushChams(inst)
         table.insert(AmbushChams, cham)
     end
@@ -55,6 +33,12 @@ local function CheckForNewObjects()
     workspace.DescendantAdded:Connect(function(inst)
         if inst.Name == "AmbushMoving" and ESPEnabled then
             OnObjectSelected(inst)
+        end
+    end)
+
+    workspace.DescendantRemoving:Connect(function(inst)
+        if inst.Name == "AmbushMoving" then
+            RemoveAmbushChams(inst)
         end
     end)
 end
@@ -73,15 +57,35 @@ end
 while wait(1) do
     if ESPEnabled then
         for _, v in ipairs(workspace:GetDescendants()) do
-            if v.Name == "AmbushMoving" and not table.find(AmbushChams, function(cham) return cham.Adornee == v end) then
+            local found = false
+            for _, cham in ipairs(AmbushChams) do
+                if cham.highlight.Adornee == v then
+                    found = true
+                    break
+                end
+            end
+            if not found and v.Name == "AmbushMoving" then
                 OnObjectSelected(v)
             end
         end
     end
 end
 
-_G.AmbushESPEnabled = not ESPEnabled
-
+_G.AmbushESPEnabled = function()
+    ESPEnabled = not ESPEnabled
+    if not ESPEnabled then
+        for _, cham in ipairs(AmbushChams) do
+            cham.highlight:Destroy()
+        end
+        AmbushChams = {}
+    else
+        for _, v in ipairs(workspace:GetDescendants()) do
+            if v.Name == "AmbushMoving" then
+                OnObjectSelected(v)
+            end
+        end
+    end
+end
 
 -- Notificação
 
