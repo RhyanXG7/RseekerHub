@@ -1,4 +1,3 @@
-
 local ESPEnabled = _G.BandageESPEnabled or false
 _G.BandageESPEnabled = ESPEnabled
 local BandageChams = {}
@@ -12,7 +11,7 @@ local function ApplyBandageChams(inst)
     Cham.FillColor = Color3.new(0, 1, 0)
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(1, 1, 1)
-    Cham.OutlineTransparency = 0
+    Cham.OutlineTransparency = 0 -- garante que o contorno seja visível
     Cham.Adornee = inst
     Cham.Enabled = true
     Cham.Parent = folder
@@ -54,7 +53,7 @@ end
 
 local function CheckForNewObjects()
     Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "Bandage" and ESPEnabled then
+        if inst.Name == "Bandage" and not ESPEnabled then
             OnObjectSelected(inst)
         end
     end)
@@ -71,10 +70,10 @@ if ESPEnabled then
     end
 end
 
-while wait(1) do
+while wait(1) do -- verificação contínua a cada 1 segundo
     if ESPEnabled then
         for _, v in ipairs(Workspace:GetDescendants()) do
-            if v.Name == "Bandage" and not table.find(BandageChams, function(cham) return cham.Adornee == v end) then
+            if v.Name == "Bandage" and not table.find(BandageChams, v) then
                 OnObjectSelected(v)
             end
         end
