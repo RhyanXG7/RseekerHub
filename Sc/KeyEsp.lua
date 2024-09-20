@@ -1,4 +1,3 @@
-
 local ESPEnabled = _G.KeyObtainESPEnabled or false
 _G.KeyObtainESPEnabled = ESPEnabled
 local KeyObtainChams = {}
@@ -9,30 +8,13 @@ folder.Parent = game:GetService("CoreGui")
 local function ApplyKeyObtainChams(inst)
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(0, 0, 1)  -- Cor azul correspondente à legenda "[Chave]"
+    Cham.FillColor = Color3.new(0, 0, 1)
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(1, 1, 1)
     Cham.OutlineTransparency = 0
     Cham.Adornee = inst
     Cham.Enabled = true
     Cham.Parent = folder
-
-    local BillboardGui = Instance.new("BillboardGui")
-    BillboardGui.Adornee = inst
-    BillboardGui.Size = UDim2.new(0, 100, 0, 50)
-    BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
-    BillboardGui.AlwaysOnTop = true
-    BillboardGui.Parent = inst
-
-    local Label = Instance.new("TextLabel")
-    Label.Text = "[Chave]"
-    Label.TextColor3 = Color3.new(0, 0, 1)  -- Texto azul
-    Label.BackgroundTransparency = 1
-    Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.TextSize = 14
-    Label.Font = Enum.Font.GothamBold
-    Label.Parent = BillboardGui
-
     return Cham
 end
 
@@ -58,6 +40,18 @@ local function CheckForNewObjects()
             OnObjectSelected(inst)
         end
     end)
+
+    Workspace.CurrentRooms.DescendantRemoving:Connect(function(inst)
+        if inst.Name == "KeyObtain" then
+            for i, cham in ipairs(KeyObtainChams) do
+                if cham.Adornee == inst then
+                    cham:Destroy()
+                    table.remove(KeyObtainChams, i)
+                    break
+                end
+            end
+        end
+    end)
 end
 
 if ESPEnabled then
@@ -74,14 +68,35 @@ end
 while wait(1) do
     if ESPEnabled then
         for _, v in ipairs(Workspace:GetDescendants()) do
-            if v.Name == "KeyObtain" and not table.find(KeyObtainChams, function(cham) return cham.Adornee == v end) then
+            local found = false
+            for _, cham in ipairs(KeyObtainChams) do
+                if cham.Adornee == v then
+                    found = true
+                    break
+                end
+            end
+            if not found and v.Name == "KeyObtain" then
                 OnObjectSelected(v)
             end
         end
     end
 end
 
-_G.KeyObtainESPEnabled = not ESPEnabled
+_G.KeyObtainESPEnabled = function()
+    ESPEnabled = not ESPEnabled
+    if not ESPEnabled then
+        for _, cham in ipairs(KeyObtainChams) do
+            cham:Destroy()
+        end
+        KeyObtainChams = {}
+    else
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            if v.Name == "KeyObtain" then
+                OnObjectSelected(v)
+            end
+        end
+    end
+end
 
 -- Notificação 
 
