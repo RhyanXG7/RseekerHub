@@ -1,6 +1,5 @@
-local ESPEnabled = _G.FuseHolderESPEnabled or false
-_G.FuseHolderESPEnabled = ESPEnabled
 local FuseHolderChams = {}
+local ESPEnabled = _G.FuseHolderESPEnabled or false
 local folder = Instance.new("Folder")
 folder.Name = "[ FuseHolder : RSeekerHub ]"
 folder.Parent = game:GetService("CoreGui")
@@ -15,23 +14,6 @@ local function ApplyFuseHolderChams(inst)
     Cham.Adornee = inst
     Cham.Enabled = true
     Cham.Parent = folder
-
-    local BillboardGui = Instance.new("BillboardGui")
-    BillboardGui.Adornee = inst
-    BillboardGui.Size = UDim2.new(0, 100, 0, 50)
-    BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
-    BillboardGui.AlwaysOnTop = true
-    BillboardGui.Parent = inst
-
-    local Label = Instance.new("TextLabel")
-    Label.Text = "[Fusível]"
-    Label.TextColor3 = Color3.new(0, 1, 0)
-    Label.BackgroundTransparency = 1
-    Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.TextSize = 14
-    Label.Font = Enum.Font.GothamBold
-    Label.Parent = BillboardGui
-
     return Cham
 end
 
@@ -53,8 +35,20 @@ end
 
 local function CheckForNewObjects()
     Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "FuseHolder" and not ESPEnabled then
+        if inst.Name == "FuseHolder" and ESPEnabled then
             OnObjectSelected(inst)
+        end
+    end)
+
+    Workspace.CurrentRooms.DescendantRemoving:Connect(function(inst)
+        if inst.Name == "FuseHolder" then
+            for i, cham in ipairs(FuseHolderChams) do
+                if cham.Adornee == inst then
+                    cham:Destroy()
+                    table.remove(FuseHolderChams, i)
+                    break
+                end
+            end
         end
     end)
 end
@@ -73,14 +67,35 @@ end
 while wait(1) do
     if ESPEnabled then
         for _, v in ipairs(Workspace:GetDescendants()) do
-            if v.Name == "FuseHolder" and not table.find(FuseHolderChams, v) then
+            local found = false
+            for _, cham in ipairs(FuseHolderChams) do
+                if cham.Adornee == v then
+                    found = true
+                    break
+                end
+            end
+            if not found and v.Name == "FuseHolder" then
                 OnObjectSelected(v)
             end
         end
     end
 end
 
-_G.FuseHolderESPEnabled = not ESPEnabled
+_G.FuseHolderESPEnabled = function()
+    ESPEnabled = not ESPEnabled
+    if not ESPEnabled then
+        for _, cham in ipairs(FuseHolderChams) do
+            cham:Destroy()
+        end
+        FuseHolderChams = {}
+    else
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            if v.Name == "FuseHolder" then
+                OnObjectSelected(v)
+            end
+        end
+    end
+end
 
 -- Notificação 
 
