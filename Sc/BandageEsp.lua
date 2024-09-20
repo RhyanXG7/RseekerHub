@@ -1,22 +1,21 @@
+local ESPEnabled = _G.BandageESPEnabled or false
+_G.BandageESPEnabled = ESPEnabled
 local BandageChams = {}
-local SelectedObject = nil
+local folder = Instance.new("Folder")
+folder.Name = "[ Bandage : RSeekerHub ]"
+folder.Parent = game:GetService("CoreGui")
 
 local function ApplyBandageChams(inst)
-    if not inst:IsDescendantOf(game.Workspace) then return nil end
-
     local Cham = Instance.new("Highlight")
-    Cham.Name = "BANDAGE ESP : SeekerHub"
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     Cham.FillColor = Color3.new(0, 1, 0)
     Cham.FillTransparency = 0.5
-    Cham.OutlineColor = Color3.new(0, 0.8, 0)
-    Cham.OutlineTransparency = 0
+    Cham.OutlineColor = Color3.new(1, 1, 1)
     Cham.Adornee = inst
     Cham.Enabled = true
-    Cham.Parent = inst
+    Cham.Parent = folder
 
     local BillboardGui = Instance.new("BillboardGui")
-    BillboardGui.Name = "BANDAGE LGD : SeekerHub"
     BillboardGui.Adornee = inst
     BillboardGui.Size = UDim2.new(0, 100, 0, 50)
     BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
@@ -25,50 +24,50 @@ local function ApplyBandageChams(inst)
 
     local Label = Instance.new("TextLabel")
     Label.Text = "[Curativo]"
-    Label.TextColor3 = Color3.new(0, 1, 0) 
-    Label.Font = Enum.Font.Fantasy 
+    Label.TextColor3 = Color3.new(0, 1, 0)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.TextScaled = true
     Label.TextSize = 14
+    Label.Font = Enum.Font.GothamBold
     Label.Parent = BillboardGui
 
     return Cham
 end
 
 local function OnObjectDeselected()
-    if SelectedObject then
-        for i = #BandageChams, 1, -1 do
-            local cham = BandageChams[i]
-            if cham.Adornee == SelectedObject then
-                cham:Destroy()
-                table.remove(BandageChams, i)
-            end
-        end
-        SelectedObject = nil
+    for i = #BandageChams, 1, -1 do
+        local cham = BandageChams[i]
+        cham:Destroy()
+        table.remove(BandageChams, i)
     end
 end
 
 local function OnObjectSelected(inst)
-    OnObjectDeselected()
-    SelectedObject = inst
-    local cham = ApplyBandageChams(inst)
-    if cham then
+    if ESPEnabled then
+        OnObjectDeselected()
+        local cham = ApplyBandageChams(inst)
         table.insert(BandageChams, cham)
     end
 end
 
-Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-    if inst.Name == "Bandage" then
-        OnObjectSelected(inst)
-    end
-end)
+if ESPEnabled then
+    folder.Parent = game:GetService("CoreGui")
+    Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
+        if inst.Name == "Bandage" then
+            OnObjectSelected(inst)
+        end
+    end)
 
-for _, v in ipairs(Workspace:GetDescendants()) do
-    if v.Name == "Bandage" then
-        OnObjectSelected(v)
+    for _, v in ipairs(Workspace:GetDescendants()) do
+        if v.Name == "Bandage" then
+            OnObjectSelected(v)
+        end
     end
 end
+
+_G.BandageESPEnabled = not ESPEnabled
+
+-- notificação 
 
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
