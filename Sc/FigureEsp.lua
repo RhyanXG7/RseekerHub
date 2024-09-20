@@ -1,71 +1,71 @@
-local KeyChams = {}
-local SelectedObject = nil
+local ESPEnabled = _G.FigureRigESPEnabled or false
+_G.FigureRigESPEnabled = ESPEnabled
+local FigureRigChams = {}
+local folder = Instance.new("Folder")
+folder.Name = "[ FigureRig : RSeekerHub ]"
+folder.Parent = game:GetService("CoreGui")
 
-local function ApplyKeyChams(inst)
-    if not inst:IsDescendantOf(game.Workspace) then return nil end  -- Verificação para garantir que o objeto ainda existe
+local function ApplyFigureRigChams(inst)
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(1, 0.647, 0)  -- Cor laranja
+    Cham.FillColor = Color3.new(1, 0, 0)
     Cham.FillTransparency = 0.5
-    Cham.OutlineColor = Color3.new(1, 0.647, 0)  -- Cor laranja
+    Cham.OutlineColor = Color3.new(1, 1, 1)
     Cham.Adornee = inst
     Cham.Enabled = true
-    Cham.Parent = game:GetService("CoreGui")
-    Cham.RobloxLocked = true
+    Cham.Parent = folder
 
-    -- Adicionando a legenda "[Figure]" com ESP em laranja
     local BillboardGui = Instance.new("BillboardGui")
     BillboardGui.Adornee = inst
     BillboardGui.Size = UDim2.new(0, 100, 0, 50)
     BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
-    BillboardGui.AlwaysOnTop = true  -- Tornar visível através das paredes
-    BillboardGui.Parent = Cham
+    BillboardGui.AlwaysOnTop = true
+    BillboardGui.Parent = inst
 
     local Label = Instance.new("TextLabel")
     Label.Text = "[Figure]"
-    Label.TextColor3 = Color3.new(1, 0.647, 0)  -- Cor laranja
+    Label.TextColor3 = Color3.new(1, 0, 0)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.TextScaled = false  -- Desativar escalonamento do texto
-    Label.TextSize = 14  -- Tamanho fixo do texto
+    Label.TextSize = 14
+    Label.Font = Enum.Font.GothamBold
     Label.Parent = BillboardGui
 
     return Cham
 end
 
 local function OnObjectDeselected()
-    if SelectedObject then
-        for i = #KeyChams, 1, -1 do
-            local cham = KeyChams[i]
-            if cham.Adornee == SelectedObject then
-                cham:Destroy()
-                table.remove(KeyChams, i)
-            end
-        end
-        SelectedObject = nil
+    for i = #FigureRigChams, 1, -1 do
+        local cham = FigureRigChams[i]
+        cham:Destroy()
+        table.remove(FigureRigChams, i)
     end
 end
 
 local function OnObjectSelected(inst)
-    OnObjectDeselected()  -- Deselecionar qualquer objeto anterior
-    SelectedObject = inst
-    local cham = ApplyKeyChams(inst)
-    if cham then
-        table.insert(KeyChams, cham)
+    if ESPEnabled then
+        OnObjectDeselected()
+        local cham = ApplyFigureRigChams(inst)
+        table.insert(FigureRigChams, cham)
     end
 end
 
-Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-    if inst.Name == "FigureRig" then
-        OnObjectSelected(inst)
-    end
-end)
+if ESPEnabled then
+    folder.Parent = game:GetService("CoreGui")
+    Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
+        if inst.Name == "FigureRig" then
+            OnObjectSelected(inst)
+        end
+    end)
 
-for _, v in ipairs(Workspace:GetDescendants()) do
-    if v.Name == "FigureRig" then
-        OnObjectSelected(v)
+    for _, v in ipairs(Workspace:GetDescendants()) do
+        if v.Name == "FigureRig" then
+            OnObjectSelected(v)
+        end
     end
 end
+
+_G.FigureRigESPEnabled = not ESPEnabled
 
 -- Not
 
@@ -79,7 +79,7 @@ sound.Ended:Connect(function()
 end)
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "🔔 Notificação",
-    Text = "🦒 Esp Figure ativo!",
+    Text = "🦒 Esp do figure agora ativo/desativado.",
     Icon = "rbxassetid://13264701341",
     Duration = 5
 })
