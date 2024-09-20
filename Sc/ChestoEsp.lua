@@ -1,44 +1,20 @@
-local ESPEnabled = _G.ChestBoxESPEnabled or false
-_G.ChestBoxESPEnabled = ESPEnabled
 local ChestBoxChams = {}
+local ESPEnabled = true
 local folder = Instance.new("Folder")
-folder.Name = "[ ChestBox : RSeekerHub ]"
-folder.Parent = game:GetService("CoreGui")
+folder.Name = "ESPFolder"
 
 local function ApplyChestBoxChams(inst)
-    local Cham = Instance.new("Highlight")
-    Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(0, 1, 1)
-    Cham.FillTransparency = 0.5
-    Cham.OutlineColor = Color3.new(1, 1, 1)
-    Cham.OutlineTransparency = 0
-    Cham.Adornee = inst
-    Cham.Enabled = true
-    Cham.Parent = folder
-
-    local BillboardGui = Instance.new("BillboardGui")
-    BillboardGui.Adornee = inst
-    BillboardGui.Size = UDim2.new(0, 100, 0, 50)
-    BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
-    BillboardGui.AlwaysOnTop = true
-    BillboardGui.Parent = inst
-
-    local Label = Instance.new("TextLabel")
-    Label.Text = "[Baú]"
-    Label.TextColor3 = Color3.new(0, 1, 1)
-    Label.BackgroundTransparency = 1
-    Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.TextSize = 14
-    Label.Font = Enum.Font.GothamBold
-    Label.Parent = BillboardGui
-
-    return Cham
+    local highlight = Instance.new("Highlight")
+    highlight.Adornee = inst
+    highlight.FillColor = Color3.new(0, 0, 1)
+    highlight.Parent = folder
+    return { highlight = highlight }
 end
 
 local function OnObjectDeselected()
     for i = #ChestBoxChams, 1, -1 do
         local cham = ChestBoxChams[i]
-        cham:Destroy()
+        cham.highlight:Destroy()
         table.remove(ChestBoxChams, i)
     end
 end
@@ -53,8 +29,20 @@ end
 
 local function CheckForNewObjects()
     Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "ChestBox" and not ESPEnabled then
+        if inst.Name == "ChestBox" and ESPEnabled then
             OnObjectSelected(inst)
+        end
+    end)
+
+    Workspace.CurrentRooms.DescendantRemoving:Connect(function(inst)
+        if inst.Name == "ChestBox" then
+            for i, cham in ipairs(ChestBoxChams) do
+                if cham.highlight.Adornee == inst then
+                    cham.highlight:Destroy()
+                    table.remove(ChestBoxChams, i)
+                    break
+                end
+            end
         end
     end)
 end
@@ -73,14 +61,35 @@ end
 while wait(1) do
     if ESPEnabled then
         for _, v in ipairs(Workspace:GetDescendants()) do
-            if v.Name == "ChestBox" and not table.find(ChestBoxChams, v) then
+            local found = false
+            for _, cham in ipairs(ChestBoxChams) do
+                if cham.highlight.Adornee == v then
+                    found = true
+                    break
+                end
+            end
+            if not found and v.Name == "ChestBox" then
                 OnObjectSelected(v)
             end
         end
     end
 end
 
-_G.ChestBoxESPEnabled = not ESPEnabled
+_G.ChestBoxESPEnabled = function()
+    ESPEnabled = not ESPEnabled
+    if not ESPEnabled then
+        for _, cham in ipairs(ChestBoxChams) do
+            cham.highlight:Destroy()
+        end
+        ChestBoxChams = {}
+    else
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            if v.Name == "ChestBox" then
+                OnObjectSelected(v)
+            end
+        end
+    end
+end
 
 -- Notificação
 
