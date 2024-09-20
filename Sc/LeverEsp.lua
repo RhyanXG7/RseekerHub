@@ -8,9 +8,10 @@ folder.Parent = game:GetService("CoreGui")
 local function ApplyLeverForGateChams(inst)
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(0.5, 0, 0.5)
+    Cham.FillColor = Color3.new(0.5, 0, 0.5)  -- Cor roxa correspondente à legenda "[Alavanca]"
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(1, 1, 1)
+    Cham.OutlineTransparency = 0
     Cham.Adornee = inst
     Cham.Enabled = true
     Cham.Parent = folder
@@ -24,7 +25,7 @@ local function ApplyLeverForGateChams(inst)
 
     local Label = Instance.new("TextLabel")
     Label.Text = "[Alavanca]"
-    Label.TextColor3 = Color3.new(0.5, 0, 0.5)
+    Label.TextColor3 = Color3.new(0.5, 0, 0.5)  -- Texto roxo
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
     Label.TextSize = 14
@@ -50,17 +51,31 @@ local function OnObjectSelected(inst)
     end
 end
 
-if ESPEnabled then
-    folder.Parent = game:GetService("CoreGui")
+local function CheckForNewObjects()
     Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "LeverForGate" then
+        if inst.Name == "LeverForGate" and ESPEnabled then
             OnObjectSelected(inst)
         end
     end)
+end
+
+if ESPEnabled then
+    folder.Parent = game:GetService("CoreGui")
+    CheckForNewObjects()
 
     for _, v in ipairs(Workspace:GetDescendants()) do
         if v.Name == "LeverForGate" then
             OnObjectSelected(v)
+        end
+    end
+end
+
+while wait(1) do
+    if ESPEnabled then
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            if v.Name == "LeverForGate" and not table.find(LeverForGateChams, function(cham) return cham.Adornee == v end) then
+                OnObjectSelected(v)
+            end
         end
     end
 end
