@@ -8,7 +8,7 @@ folder.Parent = game:GetService("CoreGui")
 local function ApplyFigureRigChams(inst)
     local Cham = Instance.new("Highlight")
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(1, 0, 0)  -- Cor vermelha correspondente à legenda "[Figure]"
+    Cham.FillColor = Color3.new(1, 0, 0)
     Cham.FillTransparency = 0.5
     Cham.OutlineColor = Color3.new(1, 1, 1)
     Cham.OutlineTransparency = 0
@@ -25,7 +25,7 @@ local function ApplyFigureRigChams(inst)
 
     local Label = Instance.new("TextLabel")
     Label.Text = "[Figure]"
-    Label.TextColor3 = Color3.new(1, 0, 0)  -- Texto vermelho
+    Label.TextColor3 = Color3.new(1, 0, 0)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
     Label.TextSize = 14
@@ -52,8 +52,8 @@ local function OnObjectSelected(inst)
 end
 
 local function CheckForNewObjects()
-    workspace.DescendantAdded:Connect(function(inst)
-        if inst.Name == "FigureRig" and ESPEnabled then
+    Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
+        if inst.Name == "FigureRig" and not ESPEnabled then
             OnObjectSelected(inst)
         end
     end)
@@ -63,7 +63,7 @@ if ESPEnabled then
     folder.Parent = game:GetService("CoreGui")
     CheckForNewObjects()
 
-    for _, v in ipairs(workspace:GetDescendants()) do
+    for _, v in ipairs(Workspace:GetDescendants()) do
         if v.Name == "FigureRig" then
             OnObjectSelected(v)
         end
@@ -72,8 +72,8 @@ end
 
 while wait(1) do
     if ESPEnabled then
-        for _, v in ipairs(workspace:GetDescendants()) do
-            if v.Name == "FigureRig" and not table.find(FigureRigChams, function(cham) return cham.Adornee == v end) then
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            if v.Name == "FigureRig" and not table.find(FigureRigChams, v) then
                 OnObjectSelected(v)
             end
         end
