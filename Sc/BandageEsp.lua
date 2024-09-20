@@ -69,7 +69,7 @@ for _, v in ipairs(Workspace:GetDescendants()) do
         OnObjectSelected(v)
     end
 end
--- Not
+
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
 sound.Volume = 1
@@ -80,7 +80,7 @@ sound.Ended:Connect(function()
 end)
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "🔔 Notificação",
-    Text = "🩹 Esp Curativo ativo!",
+    Text = "🩹 Esp do curativo agora ativo/desativado",
     Icon = "rbxassetid://13264701341",
     Duration = 5
 })
