@@ -1,5 +1,3 @@
-local ESPEnabled = _G.FigureRigESPEnabled or false
-_G.FigureRigESPEnabled = ESPEnabled
 local FigureRigChams = {}
 local folder = Instance.new("Folder")
 folder.Name = "[ FigureRig : RSeekerHub ]"
@@ -43,29 +41,31 @@ local function OnObjectDeselected()
 end
 
 local function OnObjectSelected(inst)
-    if ESPEnabled then
+    if _G.FigureRigESPEnabled then
         OnObjectDeselected()
         local cham = ApplyFigureRigChams(inst)
         table.insert(FigureRigChams, cham)
     end
 end
 
-if ESPEnabled then
-    folder.Parent = game:GetService("CoreGui")
-    Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "FigureRig" then
-            OnObjectSelected(inst)
-        end
-    end)
+local function onEntityAdded(entity)
+    if entity.Name == "FigureRig" then
+        OnObjectSelected(entity)
+    end
+end
 
-    for _, v in ipairs(Workspace:GetDescendants()) do
+if _G.FigureRigESPEnabled then
+    folder.Parent = game:GetService("CoreGui")
+    workspace.DescendantAdded:Connect(onEntityAdded)
+
+    for _, v in ipairs(workspace:GetDescendants()) do
         if v.Name == "FigureRig" then
             OnObjectSelected(v)
         end
     end
 end
 
-_G.FigureRigESPEnabled = not ESPEnabled
+_G.FigureRigESPEnabled = not _G.FigureRigESPEnabled
 
 -- Not
 
