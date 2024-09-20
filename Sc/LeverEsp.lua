@@ -1,21 +1,21 @@
-local KeyChams = {}
-local SelectedObject = nil
+local ESPEnabled = _G.LeverForGateESPEnabled or false
+_G.LeverForGateESPEnabled = ESPEnabled
+local LeverForGateChams = {}
+local folder = Instance.new("Folder")
+folder.Name = "[ LeverForGate : RSeekerHub ]"
+folder.Parent = game:GetService("CoreGui")
 
-local function ApplyKeyChams(inst)
-    if not inst:IsDescendantOf(game.Workspace) then return nil end
-
+local function ApplyLeverForGateChams(inst)
     local Cham = Instance.new("Highlight")
-    Cham.Name = "LEVER ESP : SeekerHub"
     Cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    Cham.FillColor = Color3.new(0.980392, 0.670588, 0)
+    Cham.FillColor = Color3.new(0.5, 0, 0.5)
     Cham.FillTransparency = 0.5
-    Cham.OutlineColor = Color3.new(0.792156, 0.792156, 0.792156)
+    Cham.OutlineColor = Color3.new(1, 1, 1)
     Cham.Adornee = inst
     Cham.Enabled = true
-    Cham.Parent = inst
+    Cham.Parent = folder
 
     local BillboardGui = Instance.new("BillboardGui")
-    BillboardGui.Name = "LEVER LGD : SeekerHub"
     BillboardGui.Adornee = inst
     BillboardGui.Size = UDim2.new(0, 100, 0, 50)
     BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
@@ -27,46 +27,47 @@ local function ApplyKeyChams(inst)
     Label.TextColor3 = Color3.new(0.5, 0, 0.5)
     Label.BackgroundTransparency = 1
     Label.Size = UDim2.new(1, 0, 1, 0)
-    Label.TextScaled = false
-    Label.TextSize = 12
+    Label.TextSize = 14
+    Label.Font = Enum.Font.GothamBold
     Label.Parent = BillboardGui
 
     return Cham
 end
 
 local function OnObjectDeselected()
-    if SelectedObject then
-        for i = #KeyChams, 1, -1 do
-            local cham = KeyChams[i]
-            if cham.Adornee == SelectedObject then
-                cham:Destroy()
-                table.remove(KeyChams, i)
-            end
-        end
-        SelectedObject = nil
+    for i = #LeverForGateChams, 1, -1 do
+        local cham = LeverForGateChams[i]
+        cham:Destroy()
+        table.remove(LeverForGateChams, i)
     end
 end
 
 local function OnObjectSelected(inst)
-    OnObjectDeselected()
-    SelectedObject = inst
-    local cham = ApplyKeyChams(inst)
-    if cham then
-        table.insert(KeyChams, cham)
+    if ESPEnabled then
+        OnObjectDeselected()
+        local cham = ApplyLeverForGateChams(inst)
+        table.insert(LeverForGateChams, cham)
     end
 end
 
-Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-    if inst.Name == "LeverForGate" then
-        OnObjectSelected(inst)
-    end
-end)
+if ESPEnabled then
+    folder.Parent = game:GetService("CoreGui")
+    Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
+        if inst.Name == "LeverForGate" then
+            OnObjectSelected(inst)
+        end
+    end)
 
-for _, v in ipairs(Workspace:GetDescendants()) do
-    if v.Name == "LeverForGate" then
-        OnObjectSelected(v)
+    for _, v in ipairs(Workspace:GetDescendants()) do
+        if v.Name == "LeverForGate" then
+            OnObjectSelected(v)
+        end
     end
 end
+
+_G.LeverForGateESPEnabled = not ESPEnabled
+
+-- Notificação 
 
 local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://3458224686"
@@ -78,7 +79,7 @@ sound.Ended:Connect(function()
 end)
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "🔔 Notificação",
-    Text = "👨‍🔧 Alavanca Esp ativo!",
+    Text = "👨‍🔧 esp da alavanca agora ativo/desativado.",
     Icon = "rbxassetid://13264701341",
     Duration = 5
 })
