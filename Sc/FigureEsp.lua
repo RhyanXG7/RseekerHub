@@ -53,8 +53,20 @@ end
 
 local function CheckForNewObjects()
     Workspace.CurrentRooms.DescendantAdded:Connect(function(inst)
-        if inst.Name == "FigureRig" and not ESPEnabled then
+        if inst.Name == "FigureRig" and ESPEnabled then
             OnObjectSelected(inst)
+        end
+    end)
+
+    Workspace.CurrentRooms.DescendantRemoving:Connect(function(inst)
+        if inst.Name == "FigureRig" then
+            for i, cham in ipairs(FigureRigChams) do
+                if cham.Adornee == inst then
+                    cham:Destroy()
+                    table.remove(FigureRigChams, i)
+                    break
+                end
+            end
         end
     end)
 end
@@ -73,28 +85,48 @@ end
 while wait(1) do
     if ESPEnabled then
         for _, v in ipairs(Workspace:GetDescendants()) do
-            if v.Name == "FigureRig" and not table.find(FigureRigChams, v) then
+            local found = false
+            for _, cham in ipairs(FigureRigChams) do
+                if cham.Adornee == v then
+                    found = true
+                    break
+                end
+            end
+            if not found and v.Name == "FigureRig" then
                 OnObjectSelected(v)
             end
         end
     end
 end
 
-_G.FigureRigESPEnabled = not ESPEnabled
+_G.FigureRigESPEnabled = function()
+    ESPEnabled = not ESPEnabled
+    if not ESPEnabled then
+        for _, cham in ipairs(FigureRigChams) do
+            cham:Destroy()
+        end
+        FigureRigChams = {}
+    else
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            if v.Name == "FigureRig" then
+                OnObjectSelected(v)
+            end
+        end
+    end
 
--- Not
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://3458224686"
+    sound.Volume = 1
+    sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    sound:Play()
+    sound.Ended:Connect(function()
+        sound:Destroy()
+    end)
 
-local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://3458224686"
-sound.Volume = 1
-sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-sound:Play()
-sound.Ended:Connect(function()
-    sound:Destroy()
-end)
-game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "🔔 Notificação",
-    Text = "🦒 Esp do figure agora ativo/desativado.",
-    Icon = "rbxassetid://13264701341",
-    Duration = 5
-})
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "🔔 Notificação",
+        Text = "🦒 ESP do Figure agora ativo/desativado.",
+        Icon = "rbxassetid://13264701341",
+        Duration = 5
+    })
+end
