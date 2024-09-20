@@ -1,4 +1,4 @@
--- Eu seu que você não tem criatividade e veio roubar meu código, poderia pelo menos dar os devidos creditos? @rhyan57.
+-- Eu sei que você não tem criatividade e veio roubar meu código, poderia pelo menos dar os devidos creditos? @rhyan57.
 local entities = {
     "AmbushMoving"
 }
@@ -32,7 +32,7 @@ workspace.ChildAdded:Connect(function(test)
             local connection
             connection = game:GetService("RunService").Heartbeat:Connect(function()
                 if test:IsDescendantOf(workspace) then
-                    sendNotification("Ambush surgiu", "Entre num armário!", "rbxassetid://10722835168")
+                    sendNotification("Ambush surgiu", "Entre num armário!", "rbxassetid://111462818117576")
                     playNotif()
                     notifiedEntities[test] = true
                     connection:Disconnect()
